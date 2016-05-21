@@ -1,0 +1,13 @@
+{
+  "1": {
+    "type": "login",
+    "port": 6112
+  },
+  "100": {
+    "type": "world",
+    "name": "uberPenguin",
+    "host": "127.0.0.1",
+    "port": 9875,
+    "maxClients": 250
+  }
+}

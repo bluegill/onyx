@@ -1,0 +1,19 @@
+#!/bin/bash
+
+if [ "$1" = "--run" ]; then
+  echo "Building then running..."
+
+  osascript -e '
+    tell app "Terminal"
+      do script "cd /Users/gage/Uber/server; ./node_modules/.bin/babel src -d lib; ./bin/run"
+    end tell
+  '
+else
+  echo "Building..."
+
+  osascript -e '
+    tell app "Terminal"
+      do script "cd /Users/gage/Uber/server; ./node_modules/.bin/babel src -d lib"
+    end tell
+  '
+fi
