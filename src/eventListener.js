@@ -1,6 +1,7 @@
 import chalk        from 'chalk';
 import libxmljs     from 'libxmljs';
 import chokidar     from 'chokidar';
+
 import logger       from './logger';
 import crypto       from './crypto';
 import world        from './world';
@@ -52,7 +53,6 @@ export default class {
   }
 
   parseData(data, client){
-    //logger.debug(chalk.yellow('incoming') + ': ' + data);
     logger.debug('incoming: ' + data);
 
     const isGame = ((data.charAt(0) == '<') ? false : true);

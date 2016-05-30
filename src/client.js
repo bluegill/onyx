@@ -40,10 +40,13 @@ export default class extends clientBase {
 
     this.isModerator = (player.rank > 1);
     this.isMuted     = false;
+
     this.x           = 0;
     this.y           = 0;
     this.frame       = 1;
+
     this.requests    = [];
+    
     this.defaultRoom = (!isNaN(this.settings['defaultRoom']) ? this.settings['defaultRoom'] : 100);
 
     this.updateColumn('lastLogin', utils.getTimestamp());
@@ -225,7 +228,6 @@ export default class extends clientBase {
     let amount = 1;
     if(this.furniture[furniture]){
       amount = (parseInt(this.furniture[furniture]) + 1);
-      console.log('FURNITURE: ' + furniture + ', ' + amount);
     }
     this.furniture[furniture] = amount;
     this.updateColumn('furniture', JSON.stringify(this.furniture));

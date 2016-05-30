@@ -9,7 +9,6 @@ export default class {
 
     for(const plugin of Object.keys(plugins)){
       const pluginObj = plugins[plugin];
-
       if(pluginObj.enabled){
         try {
           this.plugins[plugin] = new (require(`./${pluginObj.path}`))(this);
@@ -20,7 +19,6 @@ export default class {
     }
 
     const pluginCount = Object.keys(this.plugins).length;
-    
     logger.info(`Plugin manager initialized, loaded ${pluginCount} plugins`);
   }
 
@@ -28,6 +26,5 @@ export default class {
     if(this.plugins[plugin]){
       return this.plugins[plugin];
     }
-    return false;
   }
 }

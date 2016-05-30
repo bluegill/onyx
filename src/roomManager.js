@@ -1,5 +1,6 @@
 import logger from './logger';
 import room   from './room';
+
 import crumbs from '../crumbs/rooms';
 
 export default class {
@@ -9,9 +10,8 @@ export default class {
     this.server = world.server;
 
     for(let id of Object.keys(crumbs)){
-      if(id < 900){
+      if(id < 900)
         this.rooms[id] = new room(id, this);
-      }
     }
     
     logger.info(`Room manager initialized, loaded ${this.rooms.length} rooms`);
@@ -33,14 +33,15 @@ export default class {
 
   checkIgloo(id){
     if(this.rooms[id]){
-      if(this.rooms[id].open == true) return true;
+      if(this.rooms[id].open === true)
+        return true;
     }
     return false;
   }
 
   closeIgloo(id){
     if(this.rooms[id]){
-      return this.rooms[id].open = false;
+      return (this.rooms[id].open = false);
     }
     return false;
   }

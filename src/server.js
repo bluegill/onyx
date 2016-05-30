@@ -1,6 +1,7 @@
 import 'babel-polyfill';
 
 import net           from 'net';
+
 import utils         from './utils';
 import logger        from './logger';
 import client        from './client';
@@ -19,7 +20,7 @@ export default class {
     this.id            = options.id;
     this.type          = options.type;
     this.port          = options.port;
-    this.maxClients    = (options.maxClients ? options.maxClients : 250);
+    this.maxClients    = (options.maxClients ? options.maxClients : 100);
     this.clients       = [];
 
     this.database      = new database();
@@ -60,8 +61,8 @@ export default class {
       });
 
       socket.on('error', (error) => {
-        this.removeClient(clientObj);
         logger.error(error);
+        this.removeClient(clientObj);
       });
 
     }).listen(this.port, () => {
@@ -130,7 +131,6 @@ export default class {
         return true;
       }
     }
-
     return false;
   }
 
@@ -140,8 +140,6 @@ export default class {
         return client;
       }
     }
-
-    return false;
   }
 
   getClientByName(name){
@@ -150,15 +148,13 @@ export default class {
         return client;
       }
     }
-
-    return false;
   }
 
   getList(){
     const servers   = require('../config/server');
     let   serverArr = [];
 
-    for(let id of Object.keys(servers)){
+    for(const id of Object.keys(servers)){
       if(servers[id].type == 'world'){
         const server = [id, servers[id].name, servers[id].host, servers[id].port];
         serverArr.push(server.join('|'));

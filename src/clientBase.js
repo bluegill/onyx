@@ -12,7 +12,6 @@ export default class {
 
   send(data){
     if(this.socket){
-      //logger.debug(chalk.red('outgoing') + ': ' + data);
       logger.debug('outgoing: ' + data);
       this.socket.write(data + '\0');
     }

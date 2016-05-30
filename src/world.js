@@ -8,6 +8,7 @@ export default class {
     this.server        = server;
     this.database      = server.database;
     this.knex          = server.database.knex;
+    
     this.roomManager   = new roomManager(this);
     this.pluginManager = new pluginManager(this);
     this.gameManager   = new gameManager(this);
@@ -148,19 +149,9 @@ export default class {
     });
   }
 
-  getIglooDetails(id){
-    return (id + '%0%0%0%%');
-  }
-
-  getPuffle(id){
-    return '';
-  }
-
   reloadModules(){
     return this.server.reloadModules();
   }
-
-  /// this looks so ugly for some reason?
 
   isOnline(id){
     return this.server.isOnline(id);
