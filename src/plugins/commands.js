@@ -16,7 +16,8 @@ class commands extends pluginBase {
       'mute'  : 'handleMute',
       'ban'   : 'handleBan',
       'nick'  : 'handleNick',
-      'reload': 'handleReload'
+      'reload': 'handleReload',
+      'color' : 'handleUpdateColor'
     }
 
     this.world.handleSendMessage = (data, client) => {
@@ -34,6 +35,19 @@ class commands extends pluginBase {
         // send message if not command
         this.world.do('handleSendMessage', data, client, true);
       }
+    }
+  }
+
+  handleUpdateColor(cmd, data, client){
+    let color = cmd[0];
+
+    if(color.substr(0, 2) !== '0x'){
+      color = ('0x' + color);
+    }
+
+    if(/^0x[0-9A-F]{6}$/i.test(color) !== false || (!isNaN(color) && color < 50)){
+      client.updateOutfit('color', color);
+      client.room.sendXt('upc', -1, client.id, color);
     }
   }
 
