@@ -1,19 +1,33 @@
-#!/bin/bash
+#!/usr/local/bin/node
 
-if [ "$1" = "--run" ]; then
-  echo "Building then running..."
+const exec    = require('child_process').exec;
+const path    = require('path').join(__dirname, '../');
 
-  osascript -e '
-    tell app "Terminal"
-      do script "cd /Users/gage/Uber/server; ./node_modules/.bin/babel src -d lib; ./bin/run"
-    end tell
-  '
-else
-  echo "Building..."
+function startServer(){
+  const loginServer = exec(`cd ${path}; node run 1 --hide-header;`);
+  const worldServer = exec(`cd ${path}; node run 100 --hide-header;`);
 
-  osascript -e '
-    tell app "Terminal"
-      do script "cd /Users/gage/Uber/server; ./node_modules/.bin/babel src -d lib"
-    end tell
-  '
-fi
+  loginServer.stdout.on('data', (data) => {
+    console.log(`LOGIN SERVER -> ${data}`);
+  });
+
+  worldServer.stdout.on('data', (data) => {
+    console.log(`WORLD SERVER -> ${data}`);
+  });
+}
+
+function buildServer(){
+  const command = exec(`cd ${path}; npm --no-git-tag-version version patch; rm -rf lib; ./node_modules/.bin/babel src -d lib;`);
+
+  command.stdout.on('data', (data) => {
+    console.log(data);
+  });
+
+  if(process.argv.includes('--run')){
+    command.on('exit', (code) => {
+      if(code === 0) startServer();
+    });
+  }
+}
+
+buildServer();

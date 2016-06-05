@@ -15,7 +15,7 @@ export default class {
     return version;
   }
 
-  static handleStartup(){
+  static showHeader(){
     console.log(chalk.green(`
     ______    _____  ___   ___  ___  ___  ___  
    /    " \\  (\\"   \\|"  \\ |"  \\/"  ||"  \\/"  | 

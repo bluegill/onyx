@@ -1,21 +1,23 @@
 'use strict';
 
-var path = 'lib';
+const path = 'lib';
 
-if(process.argv[3] == '--src'){
+if(process.argv.includes('--src')){
   path = 'src';
 }
 
-var server = require('./' + path + '/server').default;
-var logger = require('./' + path + '/logger').default;
-var utils  = require('./' + path + '/utils').default;
+const server = require('./' + path + '/server').default;
+const logger = require('./' + path + '/logger').default;
+const utils  = require('./' + path + '/utils').default;
 
-var serverConfig = require('./config/server');
-var serverId     = process.argv[2];
+let serverConfig = require('./config/server');
+let serverId     = process.argv[2];
 
 serverConfig = serverConfig[serverId];
 
-utils.handleStartup();
+if(!process.argv.includes('--hide-header')){
+  utils.showHeader();
+}
 
 if(serverConfig){
   serverConfig.id = serverId;

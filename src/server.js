@@ -34,8 +34,10 @@ export default class {
 
     ///////////
 
-    process.on('SIGINT',  () => this.handleShutdown());
-    process.on('SIGTERM', () => this.handleShutdown());
+    if(process.env.NODE_ENV === 'production'){
+      process.on('SIGINT',  () => this.handleShutdown());
+      process.on('SIGTERM', () => this.handleShutdown());
+    }
   }
 
   createServer(){
@@ -102,7 +104,7 @@ export default class {
   }
 
   handleShutdown(){
-    logger.warn('Server shutting down in 60 seconds...');
+    logger.warn('Server shutting down in 30 seconds...');
 
     for(const client of this.clients){
       client.sendError(990);
@@ -111,9 +113,9 @@ export default class {
     setTimeout(() => {
       for(const client of this.clients){
         client.sendError(1)
-        process.exit();
       }
-    }, 60000);
+      process.exit();
+    }, 30000);
   }
 
   reloadModules(){
