@@ -17,7 +17,7 @@ function startServer(){
 }
 
 function buildServer(){
-  const command = exec(`cd ${path}; npm --no-git-tag-version version patch; rm -rf lib; ./node_modules/.bin/babel src -d lib;`);
+  const command = exec(`cd ${path}; rm -rf lib; ./node_modules/.bin/babel src -d lib;`);
 
   command.stdout.on('data', (data) => {
     console.log(data);
@@ -27,6 +27,8 @@ function buildServer(){
     command.on('exit', (code) => {
       if(code === 0) startServer();
     });
+  } else {
+    exec(`cd ${path}; npm --no-git-tag-version version patch;`);
   }
 }
 
