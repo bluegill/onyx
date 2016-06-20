@@ -2,8 +2,10 @@ module.exports = (data, client, world) => {
   const x  = data[3],
         y  = data[4];
 
-  client.x = x;
-  client.y = y;
+  if(!isNaN(x) && !isNaN(y)){
+    client.x = x;
+    client.y = y;
 
-  client.room.sendXt('sp', -1, client.id, x, y);
+    client.room.sendXt('sp', -1, client.id, x, y);
+  }  
 }
