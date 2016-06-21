@@ -142,6 +142,7 @@ export default class {
           this.itemCrumbs[item.item_id] = {
             name: item.name,
             type: item.type,
+            patched: item.patched,
             cost: parseInt(item.cost),
             member: false
           }

@@ -2,6 +2,9 @@ module.exports = (data, client, world) => {
   const item = parseInt(data[3]);
   if(world.itemCrumbs[item]){
     const itemCost = world.itemCrumbs[item].cost;
+    if(world.itemCrumbs[item].patched && !client.isModerator){
+      return client.sendError(402);
+    }
     if(client.inventory.includes(item)){
       return client.sendError(400);
     }
