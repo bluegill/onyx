@@ -17,7 +17,8 @@ class commands extends pluginBase {
       'ban'   : 'handleBan',
       'nick'  : 'handleNick',
       'reload': 'handleReload',
-      'color' : 'handleUpdateColor'
+      'color' : 'handleUpdateColor',
+      'speed' : 'handleUpdateSpeed'
     }
 
     this.world.handleSendMessage = (data, client) => {
@@ -49,6 +50,20 @@ class commands extends pluginBase {
       client.updateOutfit('color', color);
       client.room.sendXt('upc', -1, client.id, color);
     }
+  }
+
+  handleUpdateSpeed(cmd, data, client){
+    let speed = cmd[0];
+
+    if(!isNaN(speed) && client.rank >= 1){
+      speed = parseInt(speed);
+      
+      if(speed < 1)    speed = 0;
+      if(speed > 120)  speed = 120;
+
+      client.setCrumb('speed', speed);
+      client.room.sendXt('ups', -1, client.id, speed);
+    }    
   }
 
   handleReload(cmd, data, client){

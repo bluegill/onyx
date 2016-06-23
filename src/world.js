@@ -49,6 +49,7 @@ export default class {
         'upo': 'handleUpdateOutfit',
         'upu': 'handleUpdateCard',
         'upm': 'handleUpdateMood',
+        'ups': 'handleUpdateSpeed',
         'upk': 'handleUpdateBeak',
         'ung': 'handleUpdateNameGlow',
         'ubc': 'handleUpdateBubbleColor'
