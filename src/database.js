@@ -1,4 +1,5 @@
 import logger from './logger';
+import utils  from './utils';
 import config from '../config/database';
 
 export default class {
@@ -43,6 +44,18 @@ export default class {
       return callback(player[0], false);
     }).catch((error) => {
       return callback(0, error);
+    });
+  }
+
+  addBan(moderator, user, duration, reason){
+    this.knex('bans').insert({
+      'player': user,
+      'moderator': moderator,
+      'reason': reason,
+      'duration': duration,
+      'timestamp': utils.getTimestamp()
+    }).then(() => {
+      
     });
   }
 
