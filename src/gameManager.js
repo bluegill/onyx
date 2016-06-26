@@ -40,8 +40,7 @@ export default class {
   handleGameOver(data, client){
     let coins = parseInt(data[3]);
     coins = Math.round(coins / 4);
-    if(coins < 1) coins = 50;
-    if(coins > 1000) coins = 100;
+    if(coins > 300) coins = 300;
     client.addCoins(coins);
     client.sendXt('zo', -1, client.coins);
   }
