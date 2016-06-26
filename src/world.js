@@ -136,6 +136,8 @@ export default class {
   loadCrumbs(){
     this.itemCrumbs      = require('../crumbs/items');
     this.furnitureCrumbs = require('../crumbs/furniture');
+    this.iglooCrumbs     = require('../crumbs/igloos');
+    this.floorCrumbs     = require('../crumbs/floors');
     
     this.database.getItems((items, error) => {
       if(!error){
