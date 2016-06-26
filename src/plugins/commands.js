@@ -15,6 +15,9 @@ class commands extends pluginBase {
       'kick'  : 'handleKick',
       'mute'  : 'handleMute',
       'ban'   : 'handleBan',
+      'find'  : 'handleFindPlayer',
+      'goto'  : 'handleGotoPlayer',
+      'summon': 'handleSummonPlayer',
       'nick'  : 'handleNick',
       'reload': 'handleReload',
       'color' : 'handleUpdateColor',
@@ -35,6 +38,41 @@ class commands extends pluginBase {
       } else {
         // send message if not command
         this.world.do('handleSendMessage', data, client, true);
+      }
+    }
+  }
+
+  handleFindPlayer(cmd, data, client){
+    const name = cmd.join(' ');
+
+    if(client.isModerator){
+      const player = this.world.getClientByName(name);
+      if(player !== undefined){
+        client.sendXt('bf', -1, player.room.id, player.nickname);
+      }
+    }
+  }
+
+  handleGotoPlayer(cmd, data, client){
+    const name = cmd.join(' ');
+
+    if(client.isModerator){
+      const player = this.world.getClientByName(name);
+      if(player !== undefined){
+        if(player.room.id == client.room.id) return;
+        this.world.do('handleJoinRoom', {3: player.room.id}, client, true);
+      }
+    }
+  }
+
+  handleSummonPlayer(cmd, data, client){
+    const name = cmd.join(' ');
+
+    if(client.isModerator){
+      const player = this.world.getClientByName(name);
+      if(player !== undefined){
+        if(player.room.id == client.room.id) return;
+        this.world.do('handleJoinRoom', {3: client.room.id}, player, true);
       }
     }
   }
