@@ -160,14 +160,14 @@ class commands extends pluginBase {
   }
 
   handleNick(cmd, data, client){
-    if(client.isModerator){
+    if(client.isModerator && client.rank >= 4){
       client.nickname = cmd.join(' ');
       this.world.do('handleJoinRoom', {3: client.room.id}, client);
     }
   }
 
   handleGlobal(cmd, data, client){
-    if(client.isModerator){
+    if(client.isModerator && client.rank >= 3){
       const bot = this.parent.getPlugin('bot');
       const msg = cmd.join(' ');
       if(bot && msg.length > 3){
