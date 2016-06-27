@@ -44,10 +44,13 @@ export default class {
     net.createServer((socket) => {
       logger.info('A client has connected');
 
+      socket.setEncoding('utf8');
+
       let clientObj = new client(socket, this);
 
       if(this.clients.length >= this.maxClients){
-        return clientObj.sendError(103); // server full
+        clientObj.sendError(103); // server full
+        this.removeClient(clientObj);
       }
 
       this.clients.push(clientObj);
@@ -57,7 +60,7 @@ export default class {
         this.eventListener.parseData(data, clientObj);
       });
 
-      socket.on('end', () => {
+      socket.on('close', () => {
         logger.info('A client has disconnected');
         this.removeClient(clientObj);
       });
@@ -99,6 +102,7 @@ export default class {
       }
 
       this.clients.splice(index, 1);
+      client.socket.end();
       client.socket.destroy();
     }
   }
