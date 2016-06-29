@@ -65,7 +65,8 @@ export default class {
       },
       // COMMUNICATION HANDLERS
       'm': {
-        'sm': 'handleSendMessage'
+        'sm': 'handleSendMessage',
+        'spm': 'handleSendPrivateMessage'
       },
       // INVENTORY HANDLERS
       'i': {
