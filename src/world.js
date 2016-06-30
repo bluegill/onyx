@@ -24,6 +24,7 @@ export default class {
       'u': {
         'h': 'handleHeartbeat',
         'gp': 'handleGetPlayer',
+        'id': 'handleGetPlayerId',
         'sp': 'handleSendMove',
         'sf': 'handleSendFrame',
         'sa': 'handleSendAction',

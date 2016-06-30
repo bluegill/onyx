@@ -24,7 +24,7 @@ module.exports = (data, client, world) => {
       }
       playerObj.sendXt('spm', -1, client.id, client.nickname, striptags(message));
     } else {
-      client.sendXt('spm', -1, player, '', 'error:offline');
+      client.sendXt('spm', -1);
     }
   }
 }
