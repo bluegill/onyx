@@ -1,5 +1,5 @@
 module.exports = (data, client, world) => {
-  let speed = !isNaN(data[3]) ? parseInt(data[3]) : 0;
+  let speed = parseInt(data[3]);
 
   if(speed > 120) speed = 120;
   if(speed < 0)   speed = 0;

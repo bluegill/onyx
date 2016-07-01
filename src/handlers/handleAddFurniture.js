@@ -1,5 +1,5 @@
 module.exports = (data, client, world) => {
-  const furniture = data[3];
+  const furniture = parseInt(data[3]);
   if(world.furnitureCrumbs[furniture]){
     const itemCost = world.furnitureCrumbs[furniture].cost;
     if(client.coins < itemCost){

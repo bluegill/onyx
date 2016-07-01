@@ -1,8 +1,7 @@
 module.exports = (data, client, world) => {
-  const id = data[3];
-
-  const x = data[4];
-  const y = data[5];
+  const id = parseInt(data[3]);
+  const x  = parseInt(data[4]);
+  const y  = parseInt(data[5]);
 
   if(world.isOnline(id) && (client.isModerator && client.rank >= 3)){
     let player = world.getClientById(id);

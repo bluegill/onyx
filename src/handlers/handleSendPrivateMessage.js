@@ -1,8 +1,8 @@
 import striptags from 'striptags';
 
 module.exports = (data, client, world) => {
-  const id     = data[3];
-  const player = data[4];
+  const id     = parseInt(data[3]);
+  const player = parseInt(data[4]);
 
   let message  = data[5];
 
@@ -11,7 +11,7 @@ module.exports = (data, client, world) => {
   //}
 
   if(!isNaN(id) && !isNaN(player)){
-    if(parseInt(id) !== client.id) return;
+    if(id !== client.id) return;
 
     if(message.length < 4) return;
     if(message.length > 300) return;

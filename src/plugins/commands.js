@@ -21,8 +21,9 @@ class commands extends pluginBase {
       'nick'  : 'handleNick',
       'reload': 'handleReload',
       'color' : 'handleUpdateColor',
-      'speed' : 'handleUpdateSpeed'
-    }
+      'speed' : 'handleUpdateSpeed',
+      'up'    : 'handleUpdatePlayer'
+    };
 
     this.world.handleSendMessage = (data, client) => {
       const isCommand = (data[4].substr(0, 1) == '!');
@@ -39,6 +40,22 @@ class commands extends pluginBase {
         // send message if not command
         this.world.do('handleSendMessage', data, client, true);
       }
+    };
+  }
+
+  handleUpdatePlayer(cmd, data, client){
+    const type = cmd[0];
+    const id   = parseInt(cmd[1]);
+
+    const types = ['c', 'h', 'f', 'n', 'b', 'a', 'e', 'l', 'p'];
+
+    if(!type || !id) return;
+
+    if(!isNaN(id)){
+      if(!types.includes(type)) return;
+      if(!client.inventory.includes(id)) client.addItem(id);
+      
+      this.world.do('handleUpdateClothing', {1: ('s#up' + type), 3: id}, client, true);
     }
   }
 
@@ -91,11 +108,9 @@ class commands extends pluginBase {
   }
 
   handleUpdateSpeed(cmd, data, client){
-    let speed = cmd[0];
+    let speed = parseInt(cmd[0]);
 
     if(!isNaN(speed) && client.rank >= 1){
-      speed = parseInt(speed);
-      
       if(speed < 1)    speed = 0;
       if(speed > 120)  speed = 120;
 
@@ -177,12 +192,12 @@ class commands extends pluginBase {
   }
 
   handleJoinRoom(cmd, data, client){
-    const room = cmd[0];
+    const room = parseInt(cmd[0]);
     this.world.do('handleJoinRoom', {3: room}, client);
   }
 
   handleAddItem(cmd, data, client){
-    const item = cmd[0];
+    const item = parseInt(cmd[0]);
     if(!isNaN(item)){
       if(this.world.itemCrumbs[item]){
         client.addItem(item);
@@ -195,7 +210,7 @@ class commands extends pluginBase {
   handleAddCoins(cmd, data, client){
     if(!client.isModerator) return;
 
-    let coins = cmd[0];
+    let coins = parseInt(cmd[0]);
     if(!isNaN(coins)){
       if(coins > 50000) coins = 50000;
       client.addCoins(coins);

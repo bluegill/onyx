@@ -1,9 +1,9 @@
 module.exports = (data, client, world) => {
   const roomManager = world.roomManager;
-  const room        = data[3];
+  const room        = parseInt(data[3]);
 
-  let x = data[4],
-      y = data[5];
+  let x = parseInt(data[4]),
+      y = parseInt(data[5]);
 
   if(!x || isNaN(x)) x = 0;
   if(!y || isNaN(y)) y = 0;

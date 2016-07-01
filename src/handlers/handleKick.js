@@ -1,5 +1,6 @@
 module.exports = (data, client, world) => {
-  const id = data[3];
+  const id = parseInt(data[3]);
+  
   if(world.isOnline(id) && client.isModerator){
     let player = world.getClientById(id);
     if(player.rank >= client.rank){

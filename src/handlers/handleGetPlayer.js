@@ -1,5 +1,5 @@
 module.exports = (data, client, world) => {
-  const id     = data[3];
+  const id     = parseInt(data[3]);
   const player = world.database.getPlayerById(id, (player, error) => {
     if(!error){
       const info = [

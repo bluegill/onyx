@@ -192,7 +192,6 @@ export default class extends clientBase {
 
   updateIgloo(igloo){
     if(!isNaN(igloo)){
-      igloo = parseInt(igloo);
       this.updateColumn('roomFurniture', '[]');
       this.updateColumn('igloo', igloo);
       this.updateColumn('floor', 0);
@@ -213,7 +212,6 @@ export default class extends clientBase {
   }
 
   addItem(item){
-    item = parseInt(item);
     if(!this.inventory.includes(item)){
       this.inventory.push(item);
       this.updateColumn('inventory', JSON.stringify(this.inventory));
@@ -224,7 +222,6 @@ export default class extends clientBase {
   }
 
   addFurniture(furniture){
-    furniture = parseInt(furniture);
     let amount = 1;
     if(this.furniture[furniture]){
       amount = (parseInt(this.furniture[furniture]) + 1);
@@ -235,13 +232,11 @@ export default class extends clientBase {
   }
 
   addCoins(coins){
-    coins = parseInt(coins);
     this.coins += coins;
     this.updateColumn('coins', this.coins);
   }
 
   removeCoins(coins){
-    coins = parseInt(coins);
     this.coins -= coins;
     this.updateColumn('coins', this.coins);
   }

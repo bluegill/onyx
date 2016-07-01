@@ -1,8 +1,8 @@
 module.exports = (data, client, world) => {
-  const id       = data[3];
+  const id       = parseInt(data[3]);
   const nickname = data[4];
 
-  if(parseInt(id) !== client.id) return;
+  if(id !== client.id) return;
 
   const player = world.getClientByName(nickname);
 

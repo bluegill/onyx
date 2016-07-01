@@ -1,5 +1,5 @@
 module.exports = (data, client, world) => {
-  const id       = data[3];
+  const id       = parseInt(data[3]);
   const reason   = data[4];
   const duration = 24;
 

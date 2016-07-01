@@ -1,5 +1,7 @@
 module.exports = (data, client, world) => {
-  const type  = data[1].substr(2), item = data[3];
+  const type  = data[1].substr(2),
+        item  = parseInt(data[3]);
+  
   const types = {
     'upc': 'color',
     'uph': 'head',
