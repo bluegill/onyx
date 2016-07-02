@@ -15,6 +15,7 @@ class commands extends pluginBase {
       'kick'  : 'handleKick',
       'mute'  : 'handleMute',
       'ban'   : 'handleBan',
+      'alert' : 'handleAlert',
       'find'  : 'handleFindPlayer',
       'goto'  : 'handleGotoPlayer',
       'summon': 'handleSummonPlayer',
@@ -60,37 +61,34 @@ class commands extends pluginBase {
   }
 
   handleFindPlayer(cmd, data, client){
-    const name = cmd.join(' ');
+    if(!client.isModerator) return;
 
-    if(client.isModerator){
-      const player = this.world.getClientByName(name);
-      if(player !== undefined){
-        client.sendXt('bf', -1, player.room.id, player.nickname);
-      }
+    let playerObj = isNaN(cmd[0]) ? this.world.getClientByName(cmd[0]) : this.world.getClientById(cmd[0]);
+
+    if(playerObj){
+      client.sendXt('bf', -1, playerObj.room.id, playerObj.nickname);
     }
   }
 
   handleGotoPlayer(cmd, data, client){
-    const name = cmd.join(' ');
+    if(!client.isModerator) return;
 
-    if(client.isModerator){
-      const player = this.world.getClientByName(name);
-      if(player !== undefined){
-        if(player.room.id == client.room.id) return;
-        this.world.do('handleJoinRoom', {3: player.room.id}, client, true);
-      }
+    let playerObj = isNaN(cmd[0]) ? this.world.getClientByName(cmd[0]) : this.world.getClientById(cmd[0]);
+
+    if(playerObj){
+      if(playerObj.room.id == client.room.id) return;
+      this.world.do('handleJoinRoom', {3: playerObj.room.id}, client, true);
     }
   }
 
   handleSummonPlayer(cmd, data, client){
-    const name = cmd.join(' ');
+    if(!client.isModerator) return;
 
-    if(client.isModerator){
-      const player = this.world.getClientByName(name);
-      if(player !== undefined){
-        if(player.room.id == client.room.id) return;
-        this.world.do('handleJoinRoom', {3: client.room.id}, player, true);
-      }
+    let playerObj = isNaN(cmd[0]) ? this.world.getClientByName(cmd[0]) : this.world.getClientById(cmd[0]);
+
+    if(playerObj){
+      if(playerObj.room.id == client.room.id) return;
+      this.world.do('handleJoinRoom', {3: client.room.id}, playerObj, true);
     }
   }
 
@@ -137,9 +135,9 @@ class commands extends pluginBase {
     if(!bot) return;
 
     const name = cmd.join(' ');
-    if(name.length > 2){
+    if(name.length > 2 && client.isModerator){
       const player = this.world.getClientByName(name);
-      if(player && client.isModerator) bot.sendMessage(`${player.nickname}'s ID is ${player.id}!`, client);
+      if(player) bot.sendMessage(`${player.nickname}'s ID is ${player.id}!`, client);
     } else {
       bot.sendMessage(`Your ID is ${client.id}!`, client);
     }
@@ -151,27 +149,40 @@ class commands extends pluginBase {
   }
 
   handleKick(cmd, data, client){
-    const id = cmd[0];
-    if(client.isModerator){
-      let player = this.world.getClientById(id);
-      if(player){
-        player.sendError(5);
-        this.world.removeClient(player);
-      }
+    if(!client.isModerator) return;
+
+    let playerObj = isNaN(cmd[0]) ? this.world.getClientByName(cmd[0]) : this.world.getClientById(cmd[0]);
+
+    if(playerObj){
+      player.sendError(5);
+      this.world.removeClient(player);
     }
   }
 
   handleMute(cmd, data, client){
-    const id = cmd[0];
-    if(client.isModerator){
-      const player = this.world.getClientById(id);
-      if(player){
-        player.isMuted = !player.isMuted;
-      }
+    if(!client.isModerator) return;
+
+    let playerObj = isNaN(cmd[0]) ? this.world.getClientByName(cmd[0]) : this.world.getClientById(cmd[0]);
+
+    if(playerObj){
+      player.isMuted = !player.isMuted;
     }
   }
 
   handleBan(cmd, data, client){
+    if(!client.isModerator) return;
+
+    let playerObj = isNaN(cmd[0]) ? this.world.getClientByName(cmd[0]) : this.world.getClientById(cmd[0]);
+    let duration  = parseInt(cmd[1]);
+
+    if(duration < 0)    duration = 0;
+    if(duration > 999)  duration = 999;
+
+    if(playerObj){
+      this.world.database.addBan(client.id, playerObj.id, duration, `Banned by ${client.nickname}`);
+      playerObj.sendXt('b', -1);
+      this.world.removeClient(playerObj);
+    }
   }
 
   handleNick(cmd, data, client){
@@ -188,6 +199,27 @@ class commands extends pluginBase {
       if(bot && msg.length > 3){
         bot.sendGlobalMessage(msg)
       }
+    }
+  }
+
+  handleAlert(cmd, data, client){
+    if(!client.isModerator && client.rank < 3) return;
+
+    const type = cmd.shift();
+    const message = cmd.join(' ');
+
+    if(message.length < 4) return;
+
+    if(type == 'room'){
+      return client.room.sendXt('wa', -1, message);
+    }
+
+    if(type == 'global'){
+      const clients = this.world.server.clients;
+      for(const client of clients){
+        client.sendXt('wa', -1, message);
+      }
+      return;
     }
   }
 

@@ -1,6 +1,6 @@
 {
   "name": "Onyx",
-  "version": "0.1.5",
+  "version": "0.1.7",
   "private": true,
   "scripts": {
     "build": "bin/build",
@@ -8,15 +8,15 @@
   },
   "dependencies": {
     "chalk": "^1.1.3",
-    "chokidar": "^1.5.1",
-    "knex": "^0.11.5",
-    "libxmljs": "^0.17.1",
-    "mysql2": "^1.0.0-rc.2",
+    "chokidar": "^1.6.0",
+    "knex": "^0.11.7",
+    "libxmljs": "file:libxmljs-master",
+    "mysql2": "^1.0.0-rc.6",
     "striptags": "^2.1.1",
     "winston": "^2.2.0"
   },
   "devDependencies": {
-    "babel-cli": "^6.9.0",
+    "babel-cli": "^6.10.1",
     "babel-polyfill": "^6.9.1",
     "babel-preset-es2015": "^6.9.0"
   }
