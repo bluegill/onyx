@@ -15,13 +15,13 @@ export default new winston.Logger({
       name: 'error',
       level: 'error',
       filename: 'error.log'
-    }),
+    })/*,
 
     new winston.transports.File({
       name: 'debug',
       level: 'debug',
       filename: 'debug.log'
-    })
+    })*/
   ],
   
   exitOnError: false
