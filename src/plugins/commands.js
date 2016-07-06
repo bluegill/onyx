@@ -154,8 +154,8 @@ class commands extends pluginBase {
     let playerObj = isNaN(cmd[0]) ? this.world.getClientByName(cmd[0]) : this.world.getClientById(cmd[0]);
 
     if(playerObj){
-      player.sendError(5);
-      this.world.removeClient(player);
+      playerObj.sendError(5);
+      this.world.removeClient(playerObj);
     }
   }
 
