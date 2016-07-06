@@ -2,6 +2,7 @@ import chalk        from 'chalk';
 import libxmljs     from 'libxmljs';
 import chokidar     from 'chokidar';
 
+import utils        from './utils';
 import logger       from './logger';
 import crypto       from './crypto';
 import world        from './world';
@@ -14,6 +15,17 @@ export default class {
       'verChk': 'handleVersionCheck',
       'rndK'  : 'handleRandomKey',
       'login' : 'handleLogin'
+    }
+
+    // packet: timeout in seconds
+    this.throttle = {
+      'u#sf': 2,
+      'u#sa': 3,
+      'u#sb': 2,
+      'u#se': 2,
+      'u#ss': 3,
+      'u#sj': 3,
+      'u#sg': 5
     }
 
     if(server.type == 'world'){
@@ -83,6 +95,19 @@ export default class {
       if((data.join('').includes('|') && !allowed.includes(data[1])) || (!client.id || !client.username)){
         client.sendError(800);
         return this.server.removeClient(client);
+      }
+
+      if(this.throttle[data[1]]){
+        const packet  = data[1];
+        const timeout = this.throttle[packet];
+
+        if(!client.throttled)
+          client.throttled = {};
+
+        if(client.throttled[packet] && utils.getTimestamp() < client.throttled[packet])
+          return;
+
+        client.throttled[packet] = utils.getTimestamp() + timeout;
       }
 
       if(data[0] == 'z'){
