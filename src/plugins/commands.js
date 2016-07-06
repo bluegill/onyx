@@ -214,7 +214,7 @@ class commands extends pluginBase {
       return client.room.sendXt('wa', -1, message);
     }
 
-    if(type == 'global'){
+    if(type == 'global' || type == 'all' || type == 'server'){
       const clients = this.world.server.clients;
       for(const client of clients){
         client.sendXt('wa', -1, message);
