@@ -1,4 +1,6 @@
 module.exports = (data, client, world) => {
-  client.frame = data[3];
-  client.room.sendXt('sf', -1, client.id, data[3]);
+  const frame = parseInt(data[3]);
+  if(frame == 5012) return;
+  client.frame = frame;
+  client.room.sendXt('sf', -1, client.id, frame);
 }
