@@ -28,6 +28,8 @@ module.exports = (data, client, server) => {
         const hash = pass.substr(pass.length - 32);
 
         if(hash.length == 32){
+          const playerObj = server.getClientById(player.id);
+          if(playerObj) server.removeClient(playerObj);
           if(hash == player.loginKey){
             client.sendXt('l', -1);
             client.setClient(player);
