@@ -62,7 +62,8 @@ export default class {
         'b' : 'handleBan',
         'wa': 'handleWarn',
         'sr': 'handleSearch',
-        'mp': 'handleMove'
+        'mp': 'handleMove',
+        'bn': 'handleBlockName'
       },
       // COMMUNICATION HANDLERS
       'm': {

@@ -17,6 +17,8 @@ class commands extends pluginBase {
       'kick'  : 'handleKick',
       'mute'  : 'handleMute',
       'ban'   : 'handleBan',
+      'bname' : 'handleBlockName',
+      'ubname': 'handleUnblockName',
       'alert' : 'handleAlert',
       'find'  : 'handleFindPlayer',
       'goto'  : 'handleGotoPlayer',
@@ -99,6 +101,31 @@ class commands extends pluginBase {
     if(playerObj){
       if(playerObj.room.id == client.room.id) return;
       this.world.do('handleJoinRoom', {3: client.room.id}, playerObj, true);
+    }
+  }
+
+  handleBlockName(cmd, data, client){
+    if(!client.isModerator) return;
+
+    let playerObj = isNaN(cmd[0]) ? this.world.getClientByName(cmd[0]) : this.world.getClientById(cmd[0]);
+
+    if(playerObj){
+      const nickname = 'p' + playerObj.id;
+      playerObj.nickname = nickname;
+      playerObj.updateColumn('nickname', nickname);
+      playerObj.sendXt('bn', -1, playerObj.id);
+    }
+  }
+
+  handleUnblockName(cmd, data, client){
+    if(!client.isModerator) return;
+
+    let playerObj = this.world.getClientById(cmd[0]);
+
+    if(playerObj){
+      playerObj.nickname = playerObj.username;
+      playerObj.updateColumn('nickname', playerObj.username);
+      this.world.do('handleJoinRoom', {3: playerObj.room.id}, playerObj, true);
     }
   }
 
