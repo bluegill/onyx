@@ -10,6 +10,8 @@ class commands extends pluginBase {
       'id'    : 'handleGetId',
       'ai'    : 'handleAddItem',
       'ac'    : 'handleAddCoins',
+      'gc'    : 'handleGiftCoins',
+      'gift'  : 'handleGiftCoins',
       'jr'    : 'handleJoinRoom',
       'users' : 'handleUsers',
       'kick'  : 'handleKick',
@@ -53,9 +55,17 @@ class commands extends pluginBase {
     if(!type || !id) return;
 
     if(!isNaN(id)){
-      if(!types.includes(type)) return;
-      if(!client.inventory.includes(id)) client.addItem(id);
+      if(!types.includes(type))      return;
+      if(!this.world.itemCrumbs[id]) return;
       
+      if(!client.inventory.includes(id)){
+        const patched = this.world.itemCrumbs[id].patched;
+        if(patched == 1 && client.rank < 1) return;
+        if(patched == 2 && client.rank < 2) return;
+        if(patched == 3 && client.rank < 4) return;
+        client.addItem(id);
+      }
+
       this.world.do('handleUpdateClothing', {1: ('s#up' + type), 3: id}, client, true);
     }
   }
@@ -243,10 +253,24 @@ class commands extends pluginBase {
     if(!client.isModerator) return;
 
     let coins = parseInt(cmd[0]);
+
     if(!isNaN(coins)){
       if(coins > 50000) coins = 50000;
       client.addCoins(coins);
       client.sendXt('zo', -1, client.coins);
+    }
+  }
+
+  handleGiftCoins(cmd, data, client){
+    if(!client.isModerator || client.rank < 3) return;
+
+    let playerObj = isNaN(cmd[0]) ? this.world.getClientByName(cmd[0]) : this.world.getClientById(cmd[0]);
+    let coins     = parseInt(cmd[1]);
+
+    if(playerObj){
+      if(coins > 50000) coins = 50000;
+      playerObj.addCoins(coins);
+      playerObj.sendXt('zo', -1, playerObj.coins);
     }
   }
 }
