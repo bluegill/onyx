@@ -1,67 +1,44 @@
 import logger from './logger';
 import utils  from './utils';
+
 import config from '../config/database';
 
 export default class {
   constructor(){
     this.knex = require('knex')({
-      client: 'mysql2',
+      client: 'mariadb',
       connection: {
-        host     : config.host,
-        user     : config.username,
-        password : config.password,
-        database : config.database
+        host    : config.host,
+        db      : config.database,
+        user    : config.username,
+        password: config.password       
       }
     });
   }
 
-  getItems(callback){
-    this.knex('items').select('*').then((items) => {
-      return callback(items, false);
-    }).catch((error) => {
-      return callback(0, error);
-    });
+  updateColumn(user, column, value){
+    return this.knex('users').update(column, value).where('id', user).then(() => {});
   }
 
-  getPlayerByName(username, callback){
-    this.knex('users').select('*').where('username', username).then((player) => {
-      return callback(player[0], false);
-    }).catch((error) => {
-      return callback(0, error);
-    });
+  getItems(){
+    return this.knex('items').select('*');
   }
 
-  getPlayerById(id, callback){
-    this.knex('users').select('*').where('id', id).then((player) => {
-      return callback(player[0], false);
-    }).catch((error) => {
-      return callback(0, error);
-    });
+  getPlayerByName(username){
+    return this.knex('users').first('*').where('username', username);
   }
 
-  getPlayerData(id, callback){
-    this.knex('users').select('username', 'color', 'head', 'face', 'neck', 'body', 'hand', 'feet', 'pin', 'photo').where('id', id).then((player) => {
-      return callback(player[0], false);
-    }).catch((error) => {
-      return callback(0, error);
-    });
+  getPlayerById(id){
+    return this.knex('users').first('*').where('id', id);
   }
 
   addBan(moderator, user, duration, reason){
-    this.knex('bans').insert({
+    return this.knex('bans').insert({
       'player': user,
       'moderator': moderator,
       'reason': reason,
       'duration': duration,
       'timestamp': utils.getTimestamp()
-    }).then(() => {
-      
-    });
-  }
-
-  updateColumn(user, column, value){
-    this.knex('users').update(column, value).where('id', user).catch((error) => {
-      logger.error(error);
-    });
+    }).then(() => {})
   }
 }

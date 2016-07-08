@@ -1,3 +1,5 @@
+import Promise    from 'bluebird';
+
 import utils      from './utils';
 import database   from './database';
 import clientBase from './clientBase';
@@ -113,28 +115,34 @@ export default class extends clientBase {
 
   getBuddies(callback){
     let buddyStr = '';
+
     this.knex('users').select('id', 'nickname').whereIn('id', this.buddies).then((users) => {
-      for(const player of Object.values(users)){
+      Promise.each(users, (player) => {
         buddyStr += (player.id + '|' + player.nickname + '|');
+
         if(this.server.isOnline(player.id)){
           const client = this.server.getClientById(player.id);
           client.sendXt('bon', -1, this.id);
+
           buddyStr += '1%';
         } else {
           buddyStr += '0%';
         }
-      }
-      callback(buddyStr.slice(0, -1));
+      }).then(() => {
+        callback(buddyStr.slice(0, -1));
+      });
     });
   }
 
   getIgnored(callback){
     let ignoreStr = '';
+
     this.knex('users').select('id', 'nickname').whereIn('id', this.ignored).then((users) => {
-      for(const player of Object.values(users)){
+      Promise.each(users, (player) => {
         ignoreStr += (player.id + '|' + player.nickname) + '%';
-      }
-      callback(ignoreStr.slice(0, -1));
+      }).then(() => {
+        callback(ignoreStr.slice(0, -1));
+      });
     });
   }
 
@@ -247,7 +255,10 @@ export default class extends clientBase {
   }
 
   updateColumn(column, value){
-    this.database.updateColumn(this.id, column, value);
+    this.database.updateColumn(this.id, column, value).catch((error) => {
+      // why would this fail?
+      logger.error(error);
+    });
   }
 
   sendError(error){

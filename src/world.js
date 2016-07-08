@@ -1,3 +1,5 @@
+import Promise       from 'bluebird';
+
 import logger        from './logger';
 import roomManager   from './roomManager';
 import gameManager   from './gameManager';
@@ -124,6 +126,8 @@ export default class {
     this.loadCrumbs();
   }
 
+
+  // todo: rewrite this
   do(handler, data, client, override){
     if(this[handler] && !override){
       this[handler](data, client);
@@ -142,42 +146,28 @@ export default class {
     this.iglooCrumbs     = require('../crumbs/igloos');
     this.floorCrumbs     = require('../crumbs/floors');
     
-    this.database.getItems((items, error) => {
-      if(!error){
-        for(const item of Object.values(items)){
-          this.itemCrumbs[item.item_id] = {
-            name: item.name,
-            type: item.type,
-            patched: item.patched,
-            cost: parseInt(item.cost),
-            member: false
-          }
+    this.database.getItems().then((items) => {
+      Promise.each(items, (item) => {
+        this.itemCrumbs[item.item_id] = {
+          name: item.name,
+          type: item.type,
+          patched: item.patched,
+          cost: parseInt(item.cost),
+          member: false
         }
-      }
+      });
     });
   }
 
-  reloadModules(){
-    return this.server.reloadModules();
-  }
+  isOnline(id){ return this.server.isOnline(id); }
 
-  isOnline(id){
-    return this.server.isOnline(id);
-  }
+  getUserCount(){ return this.server.clients.length; }
 
-  getUserCount(){
-    return this.server.clients.length;
-  }
+  getClientById(id){ return this.server.getClientById(id); }
 
-  getClientById(id){
-    return this.server.getClientById(id);
-  }
+  getClientByName(name){ return this.server.getClientByName(name); }
 
-  getClientByName(name){
-    return this.server.getClientByName(name);
-  }
+  removeClient(client){ return this.server.removeClient(client); }
 
-  removeClient(client){
-    return this.server.removeClient(client);
-  }
+  reloadModules(){ return this.server.reloadModules(); }
 }
