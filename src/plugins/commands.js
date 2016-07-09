@@ -294,7 +294,7 @@ class commands extends pluginBase {
     let playerObj = isNaN(cmd[0]) ? this.world.getClientByName(cmd[0]) : this.world.getClientById(cmd[0]);
     let coins     = parseInt(cmd[1]);
 
-    if(playerObj){
+    if(playerObj && !isNaN(coins)){
       if(coins > 50000) coins = 50000;
       playerObj.addCoins(coins);
       playerObj.sendXt('zo', -1, playerObj.coins);

@@ -2,7 +2,7 @@ module.exports = (data, client, world) => {
   const id       = parseInt(data[3]);
   const nickname = data[4];
 
-  if(id !== client.id) return;
+  if(id !== client.id || nickname == undefined) return;
 
   const player = world.getClientByName(nickname);
 

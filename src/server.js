@@ -66,8 +66,10 @@ export default class {
       });
 
       socket.on('error', (error) => {
-        logger.error(error);
         this.removeClient(clientObj);
+        if(error.code == 'ETIMEDOUT' || error.code == 'ECONNRESET')
+          return;
+        logger.error(error);
       });
 
     }).listen(this.port, () => {
