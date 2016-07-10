@@ -22,6 +22,9 @@ module.exports = (data, client, world) => {
       if(playerObj.ignored.includes(client.id)){
         return client.sendXt('spm', -1, player, '', 'Message failed to send');
       }
+
+      world.database.addLog(id, player, message);
+      
       playerObj.sendXt('spm', -1, client.id, client.nickname, striptags(message));
     } else {
       client.sendXt('spm', -1);

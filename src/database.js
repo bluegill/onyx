@@ -41,4 +41,14 @@ export default class {
       'timestamp': utils.getTimestamp()
     }).then(() => {})
   }
+
+  addLog(from, to, message){
+    // todo: add public messaging logging, maybe keep max of like 20 logs per user?
+    return this.knex('messengerLog').insert({
+      'from': from,
+      'to': to,
+      'message': message,
+      'timestamp': utils.getTimestamp()
+    }).then(() => {});
+  }
 }
