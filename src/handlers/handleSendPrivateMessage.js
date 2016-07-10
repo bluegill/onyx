@@ -13,7 +13,7 @@ module.exports = (data, client, world) => {
   if(!isNaN(id) && !isNaN(player)){
     if(id !== client.id) return;
 
-    if(message.length < 4) return;
+    if(message.length < 1) return;
     if(message.length > 300) return;
 
     let playerObj = world.getClientById(player);
