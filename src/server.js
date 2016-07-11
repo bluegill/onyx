@@ -27,7 +27,8 @@ export default class {
     this.eventListener = new eventListener(this);
 
     if(this.type == 'world'){
-      this.roomManager = this.eventListener.world.roomManager;
+      this.roomManager = this.world.roomManager;
+      this.gameManager = this.world.gameManager;
     }
 
     this.createServer();
@@ -86,6 +87,10 @@ export default class {
 
       if(client.room){
         client.room.removeClient(client);
+      }
+
+      if(client.tableId){
+        this.gameManager.leaveTable(client);
       }
 
       if(client.buddies){

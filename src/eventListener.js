@@ -29,7 +29,9 @@ export default class {
     }
 
     if(server.type == 'world'){
-      this.world = new world(server);
+      this.world        = new world(server);
+      this.server.world = this.world;
+
       this.watch();
     }
   }
@@ -110,8 +112,13 @@ export default class {
         client.throttled[packet] = utils.getTimestamp() + timeout;
       }
 
-      if(data[0] == 'z'){
-        return world.gameManager.handle(data, client);
+      const gameManager = world.gameManager; // lazy
+      
+      if(gameManager.handlers[data[0]]){
+        const gameHandler = gameManager.handlers[data[0]][data[1]];
+        if(gameManager[gameHandler]){
+          return gameManager[gameHandler](data, client);
+        }
       }
 
       let handler = world.handlers[type] ?
