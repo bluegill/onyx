@@ -75,6 +75,7 @@ export default class {
     this.tablePlayers[tableId].push(client);
 
     client.sendXt('jt', -1, tableId, seatId);
+
     client.room.sendXt('ut', -1, tableId, seatId);
 
     client.tableId = tableId;
@@ -89,16 +90,21 @@ export default class {
 
       client.room.sendXt('ut', -1, tableId, seatId);
 
-      for(const player of this.tablePlayers[tableId]){
-        if(player.id !== client.id){
-          player.sendXt('cz', -1, client.nickname);
-        }
-        player.tableId = null;
+      client.tableId = null;
+
+      if(this.tablePlayers[tableId].length == 2){
+        this.tablePlayers[tableId][opponentSeat].sendXt('cz', -1, client.nickname);
       }
 
-      this.tablePlayers[tableId]    = [];
-      this.tablePopulation[tableId] = {};
-      this.tableGames[tableId]      = null;
+      this.tablePlayers[tableId].splice(seatId);
+
+      delete this.tablePopulation[tableId][client.nickname];
+
+      if(this.tablePlayers[tableId].length == 0){
+        this.tablePlayers[tableId]    = [];
+        this.tablePopulation[tableId] = {};
+        this.tableGames[tableId]      = null;
+      }
     }
   }
 
@@ -112,7 +118,7 @@ export default class {
     } else if(client.tableId){
       const tableId          = client.tableId;
       const players          = Object.keys(this.tablePopulation[tableId]);
-      const board            = this.tableGames[tableId].boardMap;
+      const board            = this.tableGames[tableId].toString();
 
       const [playerOne, playerTwo] = players;
 
@@ -128,13 +134,11 @@ export default class {
 
       client.sendXt('jz', -1, seatId);
 
-      if(seatId < 2){
-        client.room.sendXt('uz', -1, seatId, client.nickname);
+      for(const player of this.tablePlayers[tableId]){
+        player.sendXt('uz', -1, seatId, client.nickname);
 
-        if(seatId == 1){
-          for(const player of this.tablePlayers[tableId]){
-            player.sendXt('sz', -1, 0);
-          }
+        if(seatId === 1){
+          player.sendXt('sz', -1, 0);
         }
       }
     }

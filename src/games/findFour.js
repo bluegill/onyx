@@ -9,14 +9,21 @@ module.exports = class findFour {
       [0, 0, 0, 0, 0, 0, 0], 
       [0, 0, 0, 0, 0, 0, 0], 
       [0, 0, 0, 0, 0, 0, 0], 
-      [0, 0, 0, 0, 0, 0, 0], 
+      [0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0]
     ];
   }
 
   toString(){
-    let boardMap = this.boardMap;
+    let boardMap = '';
 
+    for(let i = 0; i < 7; i++){
+      for(let x = 0; x < 6; x++){
+        boardMap += this.boardMap[x][i] + ',';
+      }
+    }
+
+    return boardMap.slice(0, -1);
     /// TODO: fix board map for spectators
   }
 
