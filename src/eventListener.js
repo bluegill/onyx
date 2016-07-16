@@ -1,11 +1,10 @@
-import chalk        from 'chalk';
 import libxmljs     from 'libxmljs';
 import chokidar     from 'chokidar';
 
-import utils        from './utils';
-import logger       from './logger';
-import crypto       from './crypto';
-import world        from './world';
+import crypto       from './Crypto';
+import utils        from './Utils';
+import logger       from './Logger';
+import world        from './World';
 
 export default class {
   constructor(server){
@@ -36,17 +35,19 @@ export default class {
     }
   }
 
+  // not working on linux? chokidar dependency issue
   watch(directory){
     logger.debug(`Hotloading enabled, watching for code changes...`);
 
     let modules = {};
 
-    chokidar.watch('./build', {alwaysStat: true}).on('all', (event, path, stats) => {
+    chokidar.watch('./lib', {alwaysStat: true}).on('all', (event, path, stats) => {
       if(event == 'add') modules[path] = {size: stats.size};
       if(event == 'change'){
         if(modules[path].size !== stats.size){
           logger.debug(`Reloaded code for ${path}...`);
           modules[path].size = stats.size;
+
           delete require.cache[path];
         }
       }
@@ -63,10 +64,54 @@ export default class {
   }
 
   handleLogin(data, client){
-    require('./handlers/handleLogin.js')(data, client, this.server);
+    const xml = libxmljs.parseXml(data);
+
+    let nick  = (xml.get('//nick')).text();
+    let pass  = (xml.get('//pword')).text();
+
+    this.database.getPlayerByName(nick).then((player) => {
+      if(this.server.type == 'login'){
+        const hash = crypto.encryptPassword(player.password.toUpperCase(), client.randomKey);
+
+        if(hash == pass){
+          const loginKey   = crypto.md5(crypto.generateKey() + 'sosa');
+          const serverList = this.server.getList();
+
+          this.database.updateColumn(player.id, 'loginKey', loginKey);
+
+          client.sendXt('sd', -1, serverList);
+          client.sendXt('l', -1, player.id, loginKey, '', '100,5');
+        } else {
+          client.sendError(101);
+          this.server.removeClient(client);
+        }
+      } else {
+        const hash = pass.substr(pass.length - 32);
+
+        if(hash.length == 32){
+
+          // remove client if already signed in
+          const playerObj = this.server.getClientById(player.id);
+          if(playerObj) this.server.removeClient(playerObj);
+
+          if(hash == player.loginKey){
+            client.sendXt('l', -1);
+            client.setClient(player);
+          } else {
+            client.sendError(101);
+            this.server.removeClient(client);
+          }
+          
+          this.database.updateColumn(player.id, 'loginKey', '');
+        }
+      }
+    }).catch((error) => {
+      client.sendError(100);
+      this.server.removeClient(client);
+    });
   }
 
-  parseData(data, client){
+  handleData(data, client){
     logger.debug('incoming: ' + data);
 
     const isGame = ((data.charAt(0) == '<') ? false : true);
@@ -79,9 +124,8 @@ export default class {
         const action = (xml.get('//body')).attr('action').value();
         const method = this.handlers[action];
         
-        if(typeof this[method] == 'function'){
+        if(typeof this[method] == 'function')
           this[method](data, client);
-        }
       }
     } else {
       data = data.split('%');
@@ -91,8 +135,8 @@ export default class {
 
       const world  = this.world;
       const split  = data[1].split('#');
-      const type   = split[0],
-            action = split[1];
+      
+      const [type, action] = split;
 
       if((data.join('').includes('|') && !allowed.includes(data[1])) || (!client.id || !client.username)){
         client.sendError(800);
@@ -111,14 +155,12 @@ export default class {
 
         client.throttled[packet] = utils.getTimestamp() + timeout;
       }
-
-      const gameManager = world.gameManager; // lazy
       
-      if(gameManager.handlers[data[0]]){
-        const gameHandler = gameManager.handlers[data[0]][data[1]];
-        if(gameManager[gameHandler]){
-          return gameManager[gameHandler](data, client);
-        }
+      if(world.gameManager.handlers[data[0]]){
+        const gameHandler = world.gameManager.handlers[data[0]][data[1]];
+
+        if(world.gameManager[gameHandler])
+          return world.gameManager[gameHandler](data, client);
       }
 
       let handler = world.handlers[type] ?
@@ -126,7 +168,9 @@ export default class {
                     world.handlers[action];
 
       if(handler && data !== undefined){
-        world.do(handler, data, client);
+        // data.splice(0, 3); // easier to utilize es6 array destructuring
+
+        if(world[handler]) world[handler](data, client);
       } else {
         logger.warn(`Missing handler for ${data[1]}`);
       }

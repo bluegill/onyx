@@ -1,5 +1,5 @@
-import logger from './logger';
-import utils  from './utils';
+import logger from './Logger';
+import utils  from './Utils';
 
 import config from '../config/database';
 

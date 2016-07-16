@@ -1,10 +1,10 @@
 {
   "bot": {
     "enabled": true,
-    "path": "plugins/bot"
+    "path": "Plugins/Bot"
   },
   "commands": {
     "enabled": true,
-    "path": "plugins/commands"
+    "path": "Plugins/Commands"
   }
 }

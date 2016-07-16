@@ -1,6 +1,8 @@
-import pluginBase from './pluginBase';
+import pluginBase from './PluginBase';
 
-class commands extends pluginBase {
+/// TODO: REWRITE COMMANDS PLUGIN TO BE MORE EFFICIENT?
+
+export default class extends pluginBase {
   constructor(manager){
     super(manager);
 
@@ -30,6 +32,8 @@ class commands extends pluginBase {
       'up'    : 'handleUpdatePlayer'
     };
 
+    const handleSendMessage = this.world.handleSendMessage;
+
     this.world.handleSendMessage = (data, client) => {
       const isCommand = (data[4].substr(0, 1) == '!');
 
@@ -42,8 +46,7 @@ class commands extends pluginBase {
           this[method](cmd, data, client);
         }
       } else {
-        // send message if not command
-        this.world.do('handleSendMessage', data, client, true);
+        handleSendMessage.apply(this.world, [data, client]);
       }
     };
   }
@@ -68,7 +71,7 @@ class commands extends pluginBase {
         client.addItem(id);
       }
 
-      this.world.do('handleUpdateClothing', {1: ('s#up' + type), 3: id}, client, true);
+      this.world.handleUpdateClothing({1: ('s#up' + type), 3: id}, client);
     }
   }
 
@@ -89,7 +92,7 @@ class commands extends pluginBase {
 
     if(playerObj){
       if(playerObj.room.id == client.room.id) return;
-      this.world.do('handleJoinRoom', {3: playerObj.room.id}, client, true);
+      this.world.handleJoinRoom({3: playerObj.room.id}, client);
     }
   }
 
@@ -100,7 +103,7 @@ class commands extends pluginBase {
 
     if(playerObj){
       if(playerObj.room.id == client.room.id) return;
-      this.world.do('handleJoinRoom', {3: client.room.id}, playerObj, true);
+      this.world.handleJoinRoom({3: client.room.id}, playerObj);
     }
   }
 
@@ -125,7 +128,8 @@ class commands extends pluginBase {
     if(playerObj){
       playerObj.nickname = playerObj.username;
       playerObj.updateColumn('nickname', playerObj.username);
-      this.world.do('handleJoinRoom', {3: playerObj.room.id}, playerObj, true);
+
+      this.world.handleJoinRoom({3: playerObj.room.id}, playerObj);
     }
   }
 
@@ -155,11 +159,13 @@ class commands extends pluginBase {
   }
 
   handleReload(cmd, data, client){
-    if(client.rank >= 3 && client.isModerator){
+    if(!client.isModerator) return;
+    if(client.rank < 4)     return;
+    
+    this.world.reloadModules().then(() => {
       const bot = this.parent.getPlugin('bot');
       if(bot) bot.sendMessage('Handler modules have been reloaded and are now up-to-date!', client);
-      this.world.reloadModules();
-    }
+    });
   }
 
   handleUsers(cmd, data, client){
@@ -217,6 +223,7 @@ class commands extends pluginBase {
 
     if(playerObj){
       this.world.database.addBan(client.id, playerObj.id, duration, `Banned by ${client.nickname}`);
+
       playerObj.sendXt('b', -1);
       this.world.removeClient(playerObj);
     }
@@ -225,7 +232,7 @@ class commands extends pluginBase {
   handleNick(cmd, data, client){
     if(client.isModerator && client.rank >= 4){
       client.nickname = cmd.join(' ');
-      this.world.do('handleJoinRoom', {3: client.room.id}, client);
+      this.world.handleJoinRoom({3: client.room.id}, client);
     }
   }
 
@@ -233,9 +240,9 @@ class commands extends pluginBase {
     if(client.isModerator && client.rank >= 3){
       const bot = this.parent.getPlugin('bot');
       const msg = cmd.join(' ');
-      if(bot && msg.length > 3){
+
+      if(bot && msg.length > 3)
         bot.sendGlobalMessage(msg)
-      }
     }
   }
 
@@ -247,9 +254,8 @@ class commands extends pluginBase {
 
     if(message.length < 4) return;
 
-    if(type == 'room'){
+    if(type == 'room')
       return client.room.sendXt('wa', -1, message);
-    }
 
     if(type == 'global' || type == 'all' || type == 'server'){
       const clients = this.world.server.clients;
@@ -262,18 +268,18 @@ class commands extends pluginBase {
 
   handleJoinRoom(cmd, data, client){
     const room = parseInt(cmd[0]);
-    this.world.do('handleJoinRoom', {3: room}, client);
+    this.world.handleJoinRoom({3: room}, client);
   }
 
   handleAddItem(cmd, data, client){
     const item = parseInt(cmd[0]);
+
     if(!isNaN(item)){
-      if(this.world.itemCrumbs[item]){
-        client.addItem(item);
-      } else {
-        client.sendError(402);
-      }
+      if(this.world.itemCrumbs[item])
+        return client.addItem(item);
     }
+
+    client.sendError(402);
   }
 
   handleAddCoins(cmd, data, client){
@@ -283,6 +289,7 @@ class commands extends pluginBase {
 
     if(!isNaN(coins)){
       if(coins > 50000) coins = 50000;
+
       client.addCoins(coins);
       client.sendXt('zo', -1, client.coins);
     }
@@ -296,10 +303,9 @@ class commands extends pluginBase {
 
     if(playerObj && !isNaN(coins)){
       if(coins > 50000) coins = 50000;
+
       playerObj.addCoins(coins);
       playerObj.sendXt('zo', -1, playerObj.coins);
     }
   }
 }
-
-module.exports = commands;

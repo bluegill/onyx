@@ -6,9 +6,9 @@ if(process.argv.includes('--src')){
   path = 'src';
 }
 
-const server = require('./' + path + '/server').default;
-const logger = require('./' + path + '/logger').default;
-const utils  = require('./' + path + '/utils').default;
+const server = require('./' + path + '/Onyx').default;
+const logger = require('./' + path + '/Logger').default;
+const utils  = require('./' + path + '/Utils').default;
 
 let serverConfig = require('./config/server');
 let serverId     = process.argv[2];

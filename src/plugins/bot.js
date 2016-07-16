@@ -1,17 +1,26 @@
-import pluginBase from './pluginBase';
+import pluginBase from './PluginBase';
 
-class bot extends pluginBase {
+export default class extends pluginBase {
   constructor(manager){
     super(manager);
 
     this.id       = 0;
     this.username = 'Uber';
 
-    // override handleJoinRoom handler
-    this.world.handleJoinRoom = (data, client) => {
-      this.world.do('handleJoinRoom', data, client, true); // execute original handleJoinRoom function
+    const handleJoinRoom   = this.world.handleJoinRoom;
+    const handleJoinPlayer = this.world.handleJoinPlayer;
+
+    this.world.handleJoinRoom = ((data, client) => {
+      handleJoinRoom.apply(this.world, [data, client]);
+
       this.addToRoom(client);
-    }
+    });
+
+    this.world.handleJoinPlayer = ((data, client) => {
+      handleJoinPlayer.apply(this.world, [data, client]);
+
+      this.addToRoom(client);
+    });
   }
 
   addToRoom(client){
@@ -39,9 +48,8 @@ class bot extends pluginBase {
   }
 
   sendMessage(msg, client){
-    if(client){
+    if(client)
       client.sendXt('sm', -1, this.id, msg);
-    }
   }
 
   sendGlobalMessage(msg, client){
@@ -50,5 +58,3 @@ class bot extends pluginBase {
     }
   }
 }
-
-module.exports = bot;

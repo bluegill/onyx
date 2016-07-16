@@ -1,8 +1,8 @@
 import Promise    from 'bluebird';
 
-import utils      from './utils';
-import database   from './database';
-import clientBase from './clientBase';
+import utils      from './Utils';
+import database   from './Database';
+import clientBase from './ClientBase';
 
 export default class extends clientBase {
   constructor(socket, server){
@@ -106,11 +106,10 @@ export default class extends clientBase {
   }
 
   getIgloos(){
-    if(this.igloos.length > 0){
+    if(this.igloos.length > 0)
       return this.igloos.join('|');
-    } else {
-      return 1;
-    }
+
+    return 1;
   }
 
   getBuddies(callback){
@@ -174,6 +173,7 @@ export default class extends clientBase {
       this.rank,
       crumbs
     ];
+
     return string.join('|');
   }
 
@@ -192,9 +192,9 @@ export default class extends clientBase {
     if(!isNaN(floor)){
       this.floor = floor;
       this.updateColumn('floor', floor);
-      if(this.room.id == (this.id + 1000)){
+      
+      if(this.room.id == (this.id + 1000))
         this.sendXt('ag', -1, floor, this.coins);
-      }
     }
   }
 
@@ -212,10 +212,10 @@ export default class extends clientBase {
       if(!this.igloos[igloo]){
         this.igloos.push(igloo);
         this.updateColumn('igloos', JSON.stringify(this.igloos));
-      }      
-      if(this.room.id == (this.id + 1000)){
-        this.sendXt('au', -1, igloo, this.coins);
       }
+
+      if(this.room.id == (this.id + 1000))
+        this.sendXt('au', -1, igloo, this.coins);
     }
   }
 
@@ -231,9 +231,10 @@ export default class extends clientBase {
 
   addFurniture(furniture){
     let amount = 1;
-    if(this.furniture[furniture]){
+
+    if(this.furniture[furniture])
       amount = (parseInt(this.furniture[furniture]) + 1);
-    }
+
     this.furniture[furniture] = amount;
     this.updateColumn('furniture', JSON.stringify(this.furniture));
     this.sendXt('af', -1, furniture, this.coins);

@@ -1,5 +1,5 @@
 import chalk  from 'chalk';
-import logger from './logger';
+import logger from './Logger';
 
 export default class {
   static firstToUpper(text){

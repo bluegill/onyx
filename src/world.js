@@ -1,19 +1,29 @@
+import fs            from 'fs';
 import Promise       from 'bluebird';
 
-import logger        from './logger';
-import roomManager   from './roomManager';
-import gameManager   from './gameManager';
-import pluginManager from './pluginManager';
+Promise.promisifyAll(fs);
+
+import utils         from './Utils';
+import logger        from './Logger';
+
+import roomManager   from './Managers/RoomManager';
+import gameManager   from './Managers/GameManager';
+import pluginManager from './Managers/PluginManager';
 
 export default class {
   constructor(server){
     this.server        = server;
     this.database      = server.database;
     this.knex          = server.database.knex;
-    
+
+    this.fetchCrumbs();
+
     this.roomManager   = new roomManager(this);
-    this.pluginManager = new pluginManager(this);
     this.gameManager   = new gameManager(this);
+
+    this.fetchHandlers().then(() => {
+      this.pluginManager = new pluginManager(this);
+    });
 
     this.handlers      = {
       // NAVIGATION HANDLERS
@@ -22,6 +32,7 @@ export default class {
         'jr': 'handleJoinRoom',
         'jp': 'handleJoinPlayer'
       },
+
       // PLAYER HANDLERS
       'u': {
         'h': 'handleHeartbeat',
@@ -38,6 +49,7 @@ export default class {
         'ge': 'handleGetSettings',
         'ue': 'handleUpdateSettings'
       },
+
       // SYSTEM HANDLERS
       's': {
         'upc': 'handleUpdateClothing',
@@ -57,6 +69,7 @@ export default class {
         'ung': 'handleUpdateNameGlow',
         'ubc': 'handleUpdateBubbleColor'
       },
+
       // MODERATOR HANDLERS
       'o': {
         'k' : 'handleKick',
@@ -67,16 +80,19 @@ export default class {
         'mp': 'handleMove',
         'bn': 'handleBlockName'
       },
+
       // COMMUNICATION HANDLERS
       'm': {
         'sm': 'handleSendMessage',
         'spm': 'handleSendPrivateMessage'
       },
+
       // INVENTORY HANDLERS
       'i': {
         'ai': 'handleAddItem',
         'gi': 'handleGetInventory'
       },
+
       // IGLOO HANDLERS
       'g': {
         'gm': 'handleGetIgloo',
@@ -92,16 +108,19 @@ export default class {
         'af': 'handleAddFurniture',
         'gf': 'handleGetFurniture'
       },
+
       // PUFFLE HANDLERS
       'p': {
         'pg' : 'handleGetPuffle',
         'pgu': 'handleGetPuffleUser'
       },
+
       // TOY HANDLERS
       't': {
         'at': 'handleAddToy',
         'rt': 'handleRemoveToy'
       },
+
       // BUDDY HANDLERS
       'b': {
         //'gb': 'handleGetBuddies',
@@ -110,37 +129,35 @@ export default class {
         'bf': 'handleBuddyFind',
         'br': 'handleBuddyRequest'
       },
+
       // IGNORE LIST HANDLERS
       'n': {
         //'gn': 'handleGetIgnored',
         'an': 'handleAddIgnore',
         'rn': 'handleRemoveIgnore'
       },
+
       // MAIL HANDLERS
       'l': {
         'mst': 'handleStartMail',
         'mg' : 'handleGetMail'
       },
     }
-
-    this.loadCrumbs();
   }
 
+  fetchHandlers(){
+    return fs.readdirAsync(__dirname + '/Handlers').map((file) => {
+      if(file.substr(file.length - 3) == '.js'){
+        let handlerFile = require(__dirname + '/Handlers/' + file)[file.slice(0, -3)];
 
-  // todo: rewrite this
-  do(handler, data, client, override){
-    if(this[handler] && !override){
-      this[handler](data, client);
-    } else {
-      try {
-        require(`./handlers/${handler}.js`)(data, client, this);
-      } catch(error){
-        logger.error(error);
+        for(const handlerName of Object.keys(handlerFile)){
+          this[handlerName] = handlerFile[handlerName];
+        }
       }
-    }
+    });
   }
 
-  loadCrumbs(){
+  fetchCrumbs(){
     this.itemCrumbs      = require('../crumbs/items');
     this.furnitureCrumbs = require('../crumbs/furniture');
     this.iglooCrumbs     = require('../crumbs/igloos');

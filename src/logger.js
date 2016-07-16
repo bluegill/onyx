@@ -1,5 +1,7 @@
 import winston from 'winston';
 
+// TODO: REWRITE LOGGER USING DIFFERENT, MORE SIMPLE LOGGING LIBRARY
+
 winston.emitErrs = true;
 
 export default new winston.Logger({

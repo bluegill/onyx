@@ -21,9 +21,8 @@ export default class {
     this.clients.push(client);
     this.sendXt('ap', -1, client.buildString());
     
-    if(this.id > 1000){
+    if(this.id > 1000)
       client.sendXt('jp', -1, this.id);
-    }
 
     if(this.clients.length > 0){
       client.sendXt('jr', -1, this.id, this.buildString());
