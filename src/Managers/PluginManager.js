@@ -1,4 +1,4 @@
-import logger    from '../logger';
+import logger    from '../Logger';
 import {Plugins} from '../../onyxConfig';
 
 export default class {

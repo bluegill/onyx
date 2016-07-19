@@ -165,7 +165,7 @@ export default class {
   }
 
   getList(){
-    const servers   = require('../config/server');
+    const servers   = require('../onyxConfig').Server;
     let   serverArr = [];
 
     for(const id of Object.keys(servers)){

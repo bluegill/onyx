@@ -1,5 +1,5 @@
-import logger from '../logger';
-import room   from '../room';
+import logger from '../Logger';
+import room   from '../Room';
 
 import crumbs from '../../crumbs/rooms';
 
