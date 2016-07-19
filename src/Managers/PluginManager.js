@@ -1,5 +1,5 @@
-import logger  from '../logger';
-import plugins from '../../config/plugins';
+import logger    from '../logger';
+import {Plugins} from '../../onyxConfig';
 
 export default class {
   constructor(world){
@@ -7,14 +7,11 @@ export default class {
     this.server  = world.server;
     this.plugins = [];
 
-    for(const plugin of Object.keys(plugins)){
-      const pluginObj = plugins[plugin];
-
-      if(pluginObj.enabled){
+    for(const plugin of Plugins){
+      if(plugin.enabled){
         try {
-          this.plugins[plugin] = new (require(`../${pluginObj.path}`)).default(this);
+          this.plugins[plugin.name.toLowerCase()] = new (require(`../${plugin.path}`)).default(this);
         } catch(error){
-          logger.error(error);
           logger.warn(`Unable to load plugin '${plugin}'!`);
         }
       }
@@ -25,6 +22,6 @@ export default class {
   }
 
   getPlugin(plugin){
-    return this.plugins[plugin];
+    return this.plugins[plugin.toLowerCase()];
   }
 }

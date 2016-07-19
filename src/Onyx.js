@@ -98,18 +98,16 @@ export default class {
 
       if(client.buddies){
         for(const buddy of client.buddies){
-          if(this.isOnline(buddy)){
+          if(this.isOnline(buddy))
             this.getClientById(buddy).sendXt('bof', -1, client.id);
-          }
         }
       }
 
       if(this.roomManager){
         const igloo = (client.id + 1000);
 
-        if(this.roomManager.checkIgloo(igloo)){
+        if(this.roomManager.checkIgloo(igloo))
           this.roomManager.closeIgloo(igloo);
-        }
       }
 
       this.clients.splice(index, 1);
@@ -138,6 +136,9 @@ export default class {
     return fs.readdirAsync(__dirname + '/Handlers').map((file) => {
       if(file.substr(file.length - 3) == '.js')
           delete require.cache[file];
+    }).then(() => {
+      this.world.fetchHandlers();
+      this.gameManager.fetchHandlers();
     });
   }
 

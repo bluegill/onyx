@@ -31,12 +31,11 @@ export let Communication = {
         if(playerObj.ignored.includes(client.id))
           return client.sendXt('spm', -1, player, '', 'Message failed to send');
 
-        if(message.includes('<') && message.includes('>'))
-          message = message.split('<').join('').split('>').join('');
+        // HTML sanitization done on client side
         
         this.database.addLog(id, player, message);
         
-        playerObj.sendXt('spm', -1, client.id, client.nickname, striptags(message));
+        playerObj.sendXt('spm', -1, client.id, client.nickname, message);
       } else {
         client.sendXt('spm', -1);
       }

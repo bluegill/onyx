@@ -82,9 +82,7 @@ export let Player = {
     if(id !== client.id || nickname == undefined) return;
 
     const player = this.getClientByName(nickname);
-    if(player){
-      return client.sendXt('id', -1, player.id, player.nickname);
-    }
+    if(player) return client.sendXt('id', -1, player.id, player.nickname);
 
     client.sendXt('id', -1);
   },
@@ -99,9 +97,8 @@ export let Player = {
   handleUpdateSettings: function(data, client) {
     try {
       const json = JSON.parse(data[3]);
-      if(!isNaN(json.dock) && !isNaN(json.log)){
+      if(!isNaN(json.dock) && !isNaN(json.log))
         client.updateSettings(json);
-      }
     } catch(error){
       console.error(error);
     }

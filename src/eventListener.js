@@ -45,7 +45,7 @@ export default class {
       if(event == 'add') modules[path] = {size: stats.size};
       if(event == 'change'){
         if(modules[path].size !== stats.size){
-          logger.debug(`Reloaded code for ${path}...`);
+          logger.info(`Reloaded code for ${path}...`);
           modules[path].size = stats.size;
 
           delete require.cache[path];

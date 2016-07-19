@@ -63,9 +63,8 @@ export default class {
 
       client.tableId = null;
 
-      if(this.tablePlayers[tableId].length == 2){
+      if(this.tablePlayers[tableId].length == 2)
         this.tablePlayers[tableId][opponentSeat].sendXt('cz', -1, client.nickname);
-      }
 
       this.tablePlayers[tableId].splice(seatId);
 

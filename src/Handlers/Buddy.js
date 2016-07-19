@@ -58,9 +58,10 @@ export let Buddy = {
         this.database.updateColumn(target, 'buddies', JSON.stringify(buddies));
 
         const targetObj = this.getClientById(target);
-        if(targetObj)
+        if(targetObj){
           targetObj.sendXt('rb', -1, client.id, client.nickname);
           targetObj.buddies = buddies;
+        }
         
         client.sendXt('rb', -1, target, player.nickname);
       }

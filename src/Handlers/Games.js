@@ -1,4 +1,3 @@
-
 export let Games = {
 
   handleGetTable: function(data, client) {
@@ -68,9 +67,8 @@ export let Games = {
       for(const player of this.tablePlayers[tableId]){
         player.sendXt('uz', -1, seatId, client.nickname);
 
-        if(seatId === 1){
+        if(seatId === 1)
           player.sendXt('sz', -1, 0);
-        }
       }
     }
   },
@@ -106,9 +104,8 @@ export let Games = {
           for(const player of this.tablePlayers[tableId]){
             player.sendXt('zm', -1, seatId, chipColumn, chipRow);
 
-            if(result === 1 || result === 2){
+            if(result === 1 || result === 2)
               player.sendXt('zo', -1, player.coins);
-            }
           }
         }
       }

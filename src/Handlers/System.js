@@ -1,4 +1,3 @@
-
 export let System = {
 
   handleUpdateClothing: function(data, client) {

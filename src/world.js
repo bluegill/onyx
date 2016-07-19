@@ -121,7 +121,7 @@ export default class {
         'rt': 'handleRemoveToy'
       },
 
-      // BUDDY HANDLERS
+      // BUDDY LIST HANDLERS
       'b': {
         //'gb': 'handleGetBuddies',
         'ba': 'handleBuddyAccept',
@@ -175,6 +175,8 @@ export default class {
       });
     });
   }
+
+  //////////////////
 
   isOnline(id){ return this.server.isOnline(id); }
 

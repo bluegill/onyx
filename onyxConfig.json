@@ -1,0 +1,30 @@
+{
+  "Server": {
+    "1": {
+      "type": "login",
+      "port": 6112
+    },
+    "100": {
+      "type": "world",
+      "name": "Onyx",
+      "host": "127.0.0.1",
+      "port": 9875,
+      "maxClients": 250
+    }
+  },
+  "Plugins": [{
+    "name": "Bot",
+    "enabled": true,
+    "path": "Plugins/Bot"
+  }, {
+    "name": "Commands",
+    "enabled": true,
+    "path": "Plugins/Commands"
+  }],
+  "Database": {
+    "host": "localhost",
+    "user": "root",
+    "pass": "ascent",
+    "database": "uber"
+  }
+}

@@ -1,17 +1,17 @@
 import logger from './Logger';
 import utils  from './Utils';
 
-import config from '../config/database';
+import {Database} from '../onyxConfig';
 
 export default class {
   constructor(){
     this.knex = require('knex')({
       client: 'mariadb',
       connection: {
-        host    : config.host,
-        db      : config.database,
-        user    : config.username,
-        password: config.password       
+        'host': Database.host,
+        'db': Database.database,
+        'user': Database.user,
+        'password': Database.pass      
       }
     });
   }
