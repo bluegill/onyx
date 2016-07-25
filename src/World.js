@@ -173,6 +173,8 @@ export default class {
           member: false
         }
       });
+    }).catch((error) => {
+      logger.error(error);
     });
   }
 

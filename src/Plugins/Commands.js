@@ -65,9 +65,11 @@ export default class extends pluginBase {
       
       if(!client.inventory.includes(id)){
         const patched = this.world.itemCrumbs[id].patched;
+
         if(patched == 1 && client.rank < 1) return;
         if(patched == 2 && client.rank < 2) return;
         if(patched == 3 && client.rank < 4) return;
+        
         client.addItem(id);
       }
 
@@ -198,7 +200,7 @@ export default class extends pluginBase {
 
     if(playerObj){
       playerObj.sendError(5);
-      this.world.removeClient(playerObj);
+      playerObj.disconnect();
     }
   }
 
@@ -225,7 +227,7 @@ export default class extends pluginBase {
       this.world.database.addBan(client.id, playerObj.id, duration, `Banned by ${client.nickname}`);
 
       playerObj.sendXt('b', -1);
-      this.world.removeClient(playerObj);
+      playerObj.disconnect();
     }
   }
 

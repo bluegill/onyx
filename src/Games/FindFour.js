@@ -24,20 +24,19 @@ module.exports = class FindFour {
     }
 
     return boardMap.slice(0, -1);
-    /// TODO: fix board map for spectators
   }
 
   switchPlayer(){
     if(this.currentPlayer == 1){
-      return this.currentPlayer = 2;
+      this.currentPlayer = 2;
+    } else {
+      this.currentPlayer = 1;
     }
-    this.currentPlayer = 1;
   }
 
   validPlacement(column, row){
-    if(this.boardMap[row][column] !== 0){
+    if(this.boardMap[row][column] !== 0)
       return false;
-    }
 
     return true;
   }
@@ -73,9 +72,8 @@ module.exports = class FindFour {
     for(let column = 0; column < rows; column++){
       const result = this.determineColumnWin(column);
 
-      if(result === 1){
+      if(result === 1)
         return result;
-      }
     }
 
     return 3;
@@ -93,9 +91,8 @@ module.exports = class FindFour {
         if(this.boardMap[row][column] === this.currentPlayer){
           streak ++;
 
-          if(streak === 4){
+          if(streak === 4)
             return 1;
-          }
         } else {
           streak = 0;
         }
@@ -144,21 +141,15 @@ module.exports = class FindFour {
 
     const horizontalWin = this.determineHorizontalWin();
 
-    if(horizontalWin === 1){
-      return horizontalWin;
-    }
+    if(horizontalWin === 1) return horizontalWin;
 
     const verticalWin = this.determineVerticalWin();
 
-    if(verticalWin === 1){
-      return verticalWin;
-    }
+    if(verticalWin === 1) return verticalWin;
 
     const diagonalWin = this.determineDiagonalWin();
 
-    if(diagonalWin === 1){
-      return diagonalWin;
-    }
+    if(diagonalWin === 1) return diagonalWin;
 
     return 0;
   }

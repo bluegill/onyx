@@ -56,7 +56,7 @@ export default class {
 
       if(this.clients.length >= this.maxClients){
         clientObj.sendError(103); // server full
-        this.removeClient(clientObj);
+        clientObj.disconnect();
       }
 
       this.clients.push(clientObj);
@@ -67,12 +67,12 @@ export default class {
       });
 
       socket.on('close', () => {
+        clientObj.disconnect();
         logger.info('A client has disconnected');
-        this.removeClient(clientObj);
       });
 
       socket.on('error', (error) => {
-        this.removeClient(clientObj);
+        clientObj.disconnect();
         if(error.code == 'ETIMEDOUT' || error.code == 'ECONNRESET')
           return;
         logger.error(error);
@@ -126,7 +126,7 @@ export default class {
 
     setTimeout(() => {
       for(const client of this.clients){
-        this.removeClient(client);
+        client.disconnect();
       }
       process.exit();
     }, 30000);

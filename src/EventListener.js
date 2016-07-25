@@ -74,7 +74,7 @@ export default class {
         const hash = crypto.encryptPassword(player.password.toUpperCase(), client.randomKey);
 
         if(hash == pass){
-          const loginKey   = crypto.md5(crypto.generateKey() + 'sosa');
+          const loginKey   = crypto.md5(crypto.generateKey());
           const serverList = this.server.getList();
 
           this.database.updateColumn(player.id, 'loginKey', loginKey);
@@ -83,7 +83,7 @@ export default class {
           client.sendXt('l', -1, player.id, loginKey, '', '100,5');
         } else {
           client.sendError(101);
-          this.server.removeClient(client);
+          client.disconnect();
         }
       } else {
         const hash = pass.substr(pass.length - 32);
@@ -92,22 +92,24 @@ export default class {
 
           // remove client if already signed in
           const playerObj = this.server.getClientById(player.id);
-          if(playerObj) this.server.removeClient(playerObj);
+          if(playerObj) playerObj.disconnect();
 
           if(hash == player.loginKey){
             client.sendXt('l', -1);
             client.setClient(player);
           } else {
             client.sendError(101);
-            this.server.removeClient(client);
+            client.disconnect();
           }
           
           this.database.updateColumn(player.id, 'loginKey', '');
         }
       }
     }).catch((error) => {
+      logger.error(error);
+
       client.sendError(100);
-      this.server.removeClient(client);
+      client.disconnect();
     });
   }
 
@@ -131,7 +133,7 @@ export default class {
       data = data.split('%');
       data.splice(0, 2);
 
-      let allowed = ['g#ur', 'm#sm'];
+      let allowed  = ['g#ur', 'm#sm'];
 
       const world  = this.world;
       const split  = data[1].split('#');
@@ -140,7 +142,7 @@ export default class {
 
       if((data.join('').includes('|') && !allowed.includes(data[1])) || (!client.id || !client.username)){
         client.sendError(800);
-        return this.server.removeClient(client);
+        client.disconnect();
       }
 
       if(this.throttle[data[1]]){

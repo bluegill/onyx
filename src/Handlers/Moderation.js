@@ -15,7 +15,7 @@ export let Moderation = {
 
     if(player){
       player.sendXt('b', -1);
-      this.removeClient(player);
+      player.disconnect();
     }
   },
 
@@ -29,7 +29,7 @@ export let Moderation = {
       if(player.rank >= client.rank) return;
 
       player.sendError(5);
-      this.removeClient(player);
+      player.disconnect();
     }
   },
 

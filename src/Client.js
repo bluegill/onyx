@@ -270,4 +270,8 @@ export default class extends clientBase {
     const args = Array.prototype.join.call(arguments, '%');
     this.send('%xt%' + args + '%');
   }
+
+  disconnect(){
+    this.server.removeClient(this);
+  }
 }

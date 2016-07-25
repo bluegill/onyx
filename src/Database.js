@@ -17,7 +17,11 @@ export default class {
   }
 
   updateColumn(user, column, value){
-    return this.knex('users').update(column, value).where('id', user).then(() => {});
+    return this.knex('users').update(column, value).where('id', user).then(() => {
+      // execute
+    }).catch((error) => {
+      logger.error(error);
+    });
   }
 
   getItems(){
@@ -39,7 +43,11 @@ export default class {
       'reason': reason,
       'duration': duration,
       'timestamp': utils.getTimestamp()
-    }).then(() => {})
+    }).then(() => {
+      // execute
+    }).catch((error) => {
+      logger.error(error);
+    });
   }
 
   addLog(from, to, message){
@@ -49,6 +57,10 @@ export default class {
       'to': to,
       'message': message,
       'timestamp': utils.getTimestamp()
-    }).then(() => {});
+    }).then(() => {
+      // execute
+    }).catch((error) => {
+      logger.error(error);
+    });
   }
 }
