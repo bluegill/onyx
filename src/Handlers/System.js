@@ -48,6 +48,17 @@ export let System = {
 
   handleUpdateMood: function(data, client) {
     const mood = data[3];
+    
+    if(!mood) return;
+
+    if(mood.includes('"')){
+      mood = mood.split('"').join('');
+    }
+
+    if(mood.includes('<') && mood.includes('>')){
+      mood = mood.split('<').join('');
+      mood = mood.split('>').join('');
+    }
 
     client.setCrumb('mood', mood);
     client.room.sendXt('upm', -1, client.id, mood);
