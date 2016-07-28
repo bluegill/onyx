@@ -47,7 +47,7 @@ export let System = {
   },
 
   handleUpdateMood: function(data, client) {
-    const mood = data[3];
+    let mood = data[3];
     
     if(!mood) return;
 
