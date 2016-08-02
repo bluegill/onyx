@@ -97,7 +97,7 @@ export let System = {
     else
       client.setCrumb('bubbleText', '');
 
-    client.room.sendXt('ubc', -1, client.id, client.getCrumb('bubbleColor'), client.getCrumb('bubbleText'));
+    client.room.sendXt('ubc', -1, client.id, bubbleColor, bubbleText);
   },
 
   handleUpdateNameGlow: function(data, client) {
@@ -114,6 +114,6 @@ export let System = {
     else
       client.setCrumb('nameGlow', '');
 
-    client.room.sendXt('ung', -1, client.id, client.getCrumb('nameColor'), client.getCrumb('nameGlow'));
+    client.room.sendXt('ung', -1, client.id, nameColor, nameGlow);
   }
 }
