@@ -28,8 +28,7 @@ export let Moderation = {
     if(player){
       if(player.rank >= client.rank) return;
 
-      player.sendError(5);
-      player.disconnect();
+      player.sendError(5, true);
     }
   },
 

@@ -6,7 +6,7 @@ export default class {
     return (text.charAt(0).toUpperCase() + text.slice(1))
   }
 
-  static getTimestamp(){
+  static getTime(){
     return (Math.floor(new Date() / 1000));
   }
 

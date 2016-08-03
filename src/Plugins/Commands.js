@@ -199,8 +199,7 @@ export default class extends pluginBase {
     let playerObj = isNaN(cmd[0]) ? this.world.getClientByName(cmd[0]) : this.world.getClientById(cmd[0]);
 
     if(playerObj){
-      playerObj.sendError(5);
-      playerObj.disconnect();
+      playerObj.sendError(5, true);
     }
   }
 

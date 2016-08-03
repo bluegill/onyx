@@ -27,8 +27,6 @@ function buildServer(){
     command.on('exit', (code) => {
       if(code === 0) startServer();
     });
-  } else {
-    exec(`cd ${path}; npm --no-git-tag-version version patch;`);
   }
 }
 

@@ -1,11 +1,11 @@
+import utils from '../Utils';
+
 export let Navigation = {
 
   handleJoinServer: function(data, client) {
-    const timestamp = (Math.floor(new Date() / 1000));
-
     client.sendXt('js', -1, 0, 1, client.isModerator ? 1 : 0);
     client.sendXt('gps', -1, '');
-    client.sendXt('lp', -1, client.buildString(), client.coins, 0, 1440, timestamp, client.age, 1000, 233, '', 7);
+    client.sendXt('lp', -1, client.buildString(), client.coins, 0, 1440, utils.getTime(), client.age, 1000, 233, '', 7);
 
     if(client.settings){
       const json = JSON.stringify(client.settings);

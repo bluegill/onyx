@@ -54,10 +54,8 @@ export default class {
 
       let clientObj = new client(socket, this);
 
-      if(this.clients.length >= this.maxClients){
-        clientObj.sendError(103); // server full
-        clientObj.disconnect();
-      }
+      if(this.clients.length >= this.maxClients)
+        clientObj.sendError(103, true); // server full
 
       this.clients.push(clientObj);
 

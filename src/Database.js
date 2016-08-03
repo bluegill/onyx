@@ -42,7 +42,7 @@ export default class {
       'moderator': moderator,
       'reason': reason,
       'duration': duration,
-      'timestamp': utils.getTimestamp()
+      'timestamp': utils.getTime()
     }).then(() => {
       // execute
     }).catch((error) => {
@@ -56,7 +56,7 @@ export default class {
       'from': from,
       'to': to,
       'message': message,
-      'timestamp': utils.getTimestamp()
+      'timestamp': utils.getTime()
     }).then(() => {
       // execute
     }).catch((error) => {

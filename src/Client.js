@@ -10,7 +10,7 @@ export default class extends clientBase {
   }
 
   setClient(player){
-    const time       = (utils.getTimestamp() - player.registeredTime);
+    const time       = (utils.getTime() - player.registeredTime);
 
     this.id          = player.id;
     this.username    = player.username;
@@ -51,7 +51,7 @@ export default class extends clientBase {
     
     this.defaultRoom = (!isNaN(this.settings['defaultRoom']) ? this.settings['defaultRoom'] : 100);
 
-    this.updateColumn('lastLogin', utils.getTimestamp());
+    this.updateColumn('lastLogin', utils.getTime());
     this.updateColumn('lastIP', this.address);
   }
 
@@ -262,8 +262,9 @@ export default class extends clientBase {
     });
   }
 
-  sendError(error){
+  sendError(error, disconnect){
     this.sendXt('e', -1, error);
+    if(disconnect) this.disconnect();
   }
 
   sendXt(){

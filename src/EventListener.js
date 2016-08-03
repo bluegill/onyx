@@ -24,7 +24,8 @@ export default class {
       'u#se': 2,
       'u#ss': 3,
       'u#sj': 3,
-      'u#sg': 5
+      'u#sg': 5,
+      'm#spm': 0.5
     }
 
     if(server.type == 'world'){
@@ -82,8 +83,7 @@ export default class {
           client.sendXt('sd', -1, serverList);
           client.sendXt('l', -1, player.id, loginKey, '', '100,5');
         } else {
-          client.sendError(101);
-          client.disconnect();
+          client.sendError(101, true);
         }
       } else {
         const hash = pass.substr(pass.length - 32);
@@ -98,18 +98,14 @@ export default class {
             client.sendXt('l', -1);
             client.setClient(player);
           } else {
-            client.sendError(101);
-            client.disconnect();
+            client.sendError(800, true);
           }
           
           this.database.updateColumn(player.id, 'loginKey', '');
         }
       }
     }).catch((error) => {
-      logger.error(error);
-
-      client.sendError(100);
-      client.disconnect();
+      client.sendError(100, true);
     });
   }
 
@@ -140,10 +136,8 @@ export default class {
       
       const [type, action] = split;
 
-      if((data.join('').includes('|') && !allowed.includes(data[1])) || (!client.id || !client.username)){
-        client.sendError(800);
-        client.disconnect();
-      }
+      if((data.join('').includes('|') && !allowed.includes(data[1])) || (!client.id || !client.username))
+        client.sendError(800, true);
 
       if(this.throttle[data[1]]){
         const packet  = data[1];
@@ -152,10 +146,10 @@ export default class {
         if(!client.throttled)
           client.throttled = {};
 
-        if(client.throttled[packet] && utils.getTimestamp() < client.throttled[packet])
+        if(client.throttled[packet] && (utils.getTime() < client.throttled[packet]))
           return;
 
-        client.throttled[packet] = utils.getTimestamp() + timeout;
+        client.throttled[packet] = utils.getTime() + timeout;
       }
       
       if(world.gameManager.handlers[data[0]]){
@@ -170,7 +164,7 @@ export default class {
                     world.handlers[action];
 
       if(handler && data !== undefined){
-        // data.splice(0, 3); // easier to utilize es6 array destructuring
+        // data.splice(0, 3); // utilize es6 array destructuring
 
         if(world[handler]) world[handler](data, client);
       } else {
