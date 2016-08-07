@@ -55,25 +55,34 @@ export default class extends pluginBase {
     const type = cmd[0];
     const id   = parseInt(cmd[1]);
 
-    const types = ['c', 'h', 'f', 'n', 'b', 'a', 'e', 'l', 'p'];
+    const types = {
+      'c': 'color',
+      'h': 'head',
+      'f': 'face',
+      'n': 'neck',
+      'b': 'body',
+      'a': 'hand',
+      'e': 'feet',
+      'l': 'pin',
+      'p': 'photo'
+    };
 
     if(!type || !id) return;
 
     if(!isNaN(id)){
-      if(!types.includes(type))      return;
+      if(!types[type]) return;
       if(!this.world.itemCrumbs[id]) return;
       
       if(!client.inventory.includes(id)){
-        const patched = this.world.itemCrumbs[id].patched;
+        const patched = [413, 444]; // meh
 
-        if(patched == 1 && client.rank < 1) return;
-        if(patched == 2 && client.rank < 2) return;
-        if(patched == 3 && client.rank < 4) return;
+        if(patched.includes(id)) return;
         
         client.addItem(id);
       }
 
-      this.world.handleUpdateClothing({1: ('s#up' + type), 3: id}, client);
+      client.room.sendXt(type, -1, client.id, id);
+      client.updateOutfit(types[type], id);
     }
   }
 
@@ -82,9 +91,7 @@ export default class extends pluginBase {
 
     let playerObj = isNaN(cmd[0]) ? this.world.getClientByName(cmd[0]) : this.world.getClientById(cmd[0]);
 
-    if(playerObj){
-      client.sendXt('bf', -1, playerObj.room.id, playerObj.nickname);
-    }
+    if(playerObj) client.sendXt('bf', -1, playerObj.room.id, playerObj.nickname);
   }
 
   handleGotoPlayer(cmd, data, client){
@@ -138,9 +145,8 @@ export default class extends pluginBase {
   handleUpdateColor(cmd, data, client){
     let color = cmd[0];
 
-    if(color.substr(0, 2) !== '0x'){
+    if(color.substr(0, 2) !== '0x')
       color = ('0x' + color);
-    }
 
     if(/^0x[0-9A-F]{6}$/i.test(color) !== false || (!isNaN(color) && color < 50)){
       client.updateOutfit('color', color);
@@ -198,9 +204,7 @@ export default class extends pluginBase {
 
     let playerObj = isNaN(cmd[0]) ? this.world.getClientByName(cmd[0]) : this.world.getClientById(cmd[0]);
 
-    if(playerObj){
-      playerObj.sendError(5, true);
-    }
+    if(playerObj) playerObj.sendError(5, true);
   }
 
   handleMute(cmd, data, client){

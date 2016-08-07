@@ -38,8 +38,7 @@ export let Moderation = {
     const id   = data[3];
     let player = this.getClientById(id);
     
-    if(player)
-      player.isMuted = !player.isMuted;
+    if(player) player.isMuted = !player.isMuted;
   },
 
 

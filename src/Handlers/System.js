@@ -15,6 +15,8 @@ export let System = {
       'upl': 'pin',
       'upp': 'photo'
     }
+
+    if(!client.inventory.includes(item)) return;
     
     if(types[type]){
       client.room.sendXt(type, -1, client.id, item);

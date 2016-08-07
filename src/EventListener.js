@@ -25,7 +25,7 @@ export default class {
       'u#ss': 3,
       'u#sj': 3,
       'u#sg': 5,
-      'm#spm': 0.5
+      'zo'  : 30
     }
 
     if(server.type == 'world'){
@@ -98,7 +98,7 @@ export default class {
             client.sendXt('l', -1);
             client.setClient(player);
           } else {
-            client.sendError(800, true);
+            client.sendError(101, true);
           }
           
           this.database.updateColumn(player.id, 'loginKey', '');

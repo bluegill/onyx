@@ -29,8 +29,7 @@ export let Buddy = {
         this.database.updateColumn(target, 'buddies', JSON.stringify(buddies));
 
         const targetObj = this.getClientById(target);
-        if(targetObj)
-          targetObj.sendXt('ba', -1, client.id, client.nickname);
+        if(targetObj) targetObj.sendXt('ba', -1, client.id, client.nickname);
 
         client.sendXt('ba', -1, target, player.nickname);
       }
@@ -72,8 +71,7 @@ export let Buddy = {
     const target    = parseInt(data[3]);
     const targetObj = this.getClientById(target);
 
-    if(targetObj)
-      client.sendXt('bf', -1, targetObj.room.id);
+    if(targetObj) client.sendXt('bf', -1, targetObj.room.id);
   },
 
   handleBuddyRequest: function(data, client) {

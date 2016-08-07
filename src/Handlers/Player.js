@@ -40,7 +40,7 @@ export let Player = {
 
   handleSendEmote: function(data, client) {
     const emote = parseInt(data[3]);
-    if(emote == 19) return; // block annoying shitting noise
+    if(emote == 19) return; // block annoying toot noise
 
     client.room.sendXt('se', -1, client.id, data[3]);
   },

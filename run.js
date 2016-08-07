@@ -2,8 +2,7 @@
 
 const path = 'lib';
 
-if(process.argv.includes('--src'))
-  path = 'src';
+if(process.argv.includes('--src')) path = 'src';
 
 const server = require('./' + path + '/Onyx').default;
 const logger = require('./' + path + '/Logger').default;
