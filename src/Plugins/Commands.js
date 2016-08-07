@@ -71,13 +71,20 @@ export default class extends pluginBase {
 
     if(!isNaN(id)){
       if(!types[type]) return;
-      if(!this.world.itemCrumbs[id]) return;
       
-      if(!client.inventory.includes(id)){
-        const patched = [413, 444]; // meh
+      const item = this.world.itemCrumbs[id];
+      if(!crumbs) return;
 
-        if(patched.includes(id)) return;
-        
+      if(!client.inventory.includes(id)){
+        if(item.patched == 1 && client.rank < 1) return client.sendError(402);
+        if(item.patched == 2 && client.rank < 2) return client.sendError(402);
+        if(item.patched == 3 && client.rank < 4) return client.sendError(402);
+
+        if(client.rank > 1) item.cost = 0;
+
+        if(client.coins < item.cost) return client.sendError(401);
+
+        client.removeCoins(item.cost);
         client.addItem(id);
       }
 
