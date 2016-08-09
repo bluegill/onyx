@@ -74,7 +74,7 @@ export default class extends pluginBase {
       if(!types[type]) return;
       
       const item = this.world.itemCrumbs[id];
-      if(!crumbs) return;
+      if(!item) return;
 
       if(!client.inventory.includes(id)){
         if(item.patched == 1 && client.rank < 1) return client.sendError(402);
@@ -232,7 +232,7 @@ export default class extends pluginBase {
     let duration  = parseInt(cmd[1]);
 
     if(!duration) duration = 24;
-    
+
     if(duration < 0)    duration = 0;
     if(duration > 999)  duration = 999;
 
