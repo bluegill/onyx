@@ -55,7 +55,7 @@ export let Navigation = {
 
     if(room < 1000) room += 1000;
 
-    if(this.roomManager.getRoom(room) == false)
+    if(!this.roomManager.getRoom(room))
       this.roomManager.createRoom(room);
 
     const roomObject = this.roomManager.getRoom(room);

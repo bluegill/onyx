@@ -22,6 +22,7 @@ export default class extends pluginBase {
       'bname' : 'handleBlockName',
       'ubname': 'handleUnblockName',
       'alert' : 'handleAlert',
+      'warn'  : 'handleAlert',
       'find'  : 'handleFindPlayer',
       'goto'  : 'handleGotoPlayer',
       'summon': 'handleSummonPlayer',
@@ -259,23 +260,27 @@ export default class extends pluginBase {
   }
 
   handleAlert(cmd, data, client){
-    if(!client.isModerator && client.rank < 3) return;
+    if(!client.isModerator) return;
 
     const type = cmd.shift();
     const message = cmd.join(' ');
 
-    if(message.length < 4) return;
+    if(!message.length) return;
 
-    if(type == 'room')
+    if(type == 'room' && client.rank >= 3)
       return client.room.sendXt('wa', -1, message);
 
-    if(type == 'global' || type == 'all' || type == 'server'){
+    if((type == 'global' || type == 'all' || type == 'server') && client.rank >= 3){
       const clients = this.world.server.clients;
       for(const client of clients){
         client.sendXt('wa', -1, message);
       }
       return;
     }
+
+    let playerObj = isNaN(type) ? this.world.getClientByName(type) : this.world.getClientById(type);
+
+    if(playerObj) playerObj.sendXt('wa', -1, message);
   }
 
   handleJoinRoom(cmd, data, client){
