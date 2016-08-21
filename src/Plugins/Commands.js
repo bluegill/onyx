@@ -89,7 +89,7 @@ export default class extends pluginBase {
         client.addItem(id);
       }
 
-      client.room.sendXt(type, -1, client.id, id);
+      client.room.sendXt('up' + type, -1, client.id, id);
       client.updateOutfit(types[type], id);
     }
   }

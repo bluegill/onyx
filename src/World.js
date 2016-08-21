@@ -158,10 +158,10 @@ export default class {
   }
 
   fetchCrumbs(){
-    this.itemCrumbs      = require('../crumbs/items');
-    this.furnitureCrumbs = require('../crumbs/furniture');
-    this.iglooCrumbs     = require('../crumbs/igloos');
-    this.floorCrumbs     = require('../crumbs/floors');
+    this.itemCrumbs      = require('../data/crumbs/items');
+    this.furnitureCrumbs = require('../data/crumbs/furniture');
+    this.iglooCrumbs     = require('../data/crumbs/igloos');
+    this.floorCrumbs     = require('../data/crumbs/floors');
     
     this.database.getItems().then((items) => {
       Promise.each(items, (item) => {

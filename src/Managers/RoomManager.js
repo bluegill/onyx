@@ -1,7 +1,7 @@
 import logger from '../Logger';
 import room   from '../Room';
 
-import crumbs from '../../crumbs/rooms';
+import crumbs from '../../data/crumbs/rooms';
 
 export default class {
   constructor(world){

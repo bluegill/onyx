@@ -4,8 +4,8 @@ const exec    = require('child_process').exec;
 const path    = require('path').join(__dirname, '../');
 
 function startServer(){
-  const loginServer = exec(`cd ${path}; node run 1 --hide-header;`);
-  const worldServer = exec(`cd ${path}; node run 100 --hide-header;`);
+  const loginServer = exec(`cd ${path}; node run 1;`);
+  const worldServer = exec(`cd ${path}; node run 100 ;`);
 
   loginServer.stdout.on('data', (data) => {
     console.log(`LOGIN SERVER -> ${data}`);

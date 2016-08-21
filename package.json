@@ -1,22 +1,20 @@
 {
   "name": "Onyx",
-  "version": "0.2.6",
+  "version": "0.4.0",
   "private": true,
   "scripts": {
     "build": "bin/build",
     "start": "bin/build --run"
   },
   "dependencies": {
-    "babel-cli": "^6.11.4",
     "chalk": "^1.1.3",
     "chokidar": "^1.6.0",
     "knex": "^0.11.9",
-    "libxmljs": "file:libxmljs-master",
     "mariasql": "^0.2.6",
     "winston": "^2.2.0"
   },
   "devDependencies": {
-    "babel-cli": "^6.10.1",
+    "babel-cli": "^6.11.4",
     "babel-polyfill": "^6.9.1",
     "babel-preset-es2015": "^6.9.0"
   }
