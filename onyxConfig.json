@@ -20,6 +20,10 @@
     "name": "Commands",
     "enabled": true,
     "path": "Plugins/Commands"
+  }, {
+    "name": "Censor",
+    "enabled": true,
+    "path": "Plugins/Censor"
   }],
   "Database": {
     "host": "localhost",

@@ -129,7 +129,7 @@ export default class {
       data = data.split('%');
       data.splice(0, 2);
 
-      let allowed  = ['g#ur', 'm#sm'];
+      let allowed  = ['g#ur', 'g#af', 'g#gf', 'g#gr', 'g#gm', 'm#sm'];
 
       const world  = this.world;
       const split  = data[1].split('#');
