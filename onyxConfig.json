@@ -28,7 +28,7 @@
   "Database": {
     "host": "localhost",
     "user": "root",
-    "pass": "ascent",
-    "database": "uber"
+    "pass": "",
+    "database": "user"
   }
 }
