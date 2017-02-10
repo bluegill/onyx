@@ -27,8 +27,8 @@
   }],
   "Database": {
     "host": "localhost",
-    "user": "matheuschimelli",
+    "user": "root",
     "pass": "",
-    "database": "c9"
+    "database": "user"
   }
 }
