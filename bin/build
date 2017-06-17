@@ -1,33 +1,33 @@
 #!/usr/local/bin/node
 
-const exec    = require('child_process').exec;
-const path    = require('path').join(__dirname, '../');
+const exec = require('child_process').exec
+const path = require('path').join(__dirname, '../')
 
-function startServer(){
-  const loginServer = exec(`cd ${path}; node run 1;`);
-  const worldServer = exec(`cd ${path}; node run 100 ;`);
+function startServer () {
+  const loginServer = exec(`cd ${path}; node run 1;`)
+  const worldServer = exec(`cd ${path}; node run 100;`)
 
   loginServer.stdout.on('data', (data) => {
-    console.log(`LOGIN SERVER -> ${data}`);
-  });
+    console.log(`LOGIN SERVER -> ${data}`)
+  })
 
   worldServer.stdout.on('data', (data) => {
-    console.log(`WORLD SERVER -> ${data}`);
-  });
+    console.log(`WORLD SERVER -> ${data}`)
+  })
 }
 
-function buildServer(){
-  const command = exec(`cd ${path}; rm -rf lib; ./node_modules/.bin/babel src -d lib;`);
+function buildServer () {
+  const command = exec(`cd ${path}; rm -rf lib; ./node_modules/.bin/babel src -d lib;`)
 
   command.stdout.on('data', (data) => {
-    console.log(data);
-  });
+    console.log(data)
+  })
 
-  if(process.argv.includes('--run')){
+  if(process.argv.includes('--run')) {
     command.on('exit', (code) => {
-      if(code === 0) startServer();
-    });
+      if(code === 0) startServer()
+    })
   }
 }
 
-buildServer();
+buildServer()

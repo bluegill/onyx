@@ -1,9 +1,9 @@
-import logger from '../Logger';
+'use strict'
 
-export default class {
-  constructor(manager){
-    this.parent = manager;
-    this.world  = manager.world;
-    this.server = manager.server;
+module.exports = class {
+  constructor (manager) {
+    this.parent = manager
+    this.world = manager.world
+    this.server = manager.server
   }
 }

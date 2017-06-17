@@ -73,7 +73,7 @@ const DEFAULT_REQUESTS = {
   /** MAIL **/
   START_MAIL: 'mst',
   GET_MAIL: 'mg'
-};
+}
 
 const EXTENDED_REQUESTS = {
   GET_PLAYER_ID: 'id',
@@ -91,8 +91,8 @@ const EXTENDED_REQUESTS = {
   MOVE_PLAYER: 'mp',
   BLOCK_PLAYER_NAME: 'bn',
   SEND_PRIVATE_MESSAGE: 'spm'
-};
+}
 
-Object.assign(DEFAULT_REQUESTS, EXTENDED_REQUESTS);
+Object.assign(DEFAULT_REQUESTS, EXTENDED_REQUESTS)
 
-export DEFAULT_REQUESTS;
+module.exports = DEFAULT_REQUESTS

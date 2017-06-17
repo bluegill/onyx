@@ -1,178 +1,187 @@
-import 'babel-polyfill';
+'use strict'
 
-import net           from 'net';
-import fs            from 'fs';
+const net = require('net')
+const fs = require('fs')
+const path = require('path')
 
-import Promise       from 'bluebird';
+const Promise = require('bluebird')
 
-Promise.promisifyAll(fs);
+Promise.promisifyAll(fs)
 
-import utils         from './Utils';
-import logger        from './Logger';
-import client        from './Client';
-import database      from './Database';
-import eventListener from './EventListener';
+const utils = require('./Utils')
+const logger = require('./Logger')
 
-export default class {
-  constructor(options){
-    logger.info('Starting server...');
+const Client = require('./Client')
+const Database = require('./Database')
+const EventListener = require('./EventListener')
 
-    if(!options.id || !options.type || !options.port){
-      logger.error('Missing server configuration options', options);
-      process.exit();
-    }
-    
-    this.id            = options.id;
-    this.type          = options.type;
-    this.port          = options.port;
-    this.maxClients    = (options.maxClients ? options.maxClients : 100);
-    this.clients       = [];
+module.exports = class {
+  constructor (config) {
+    logger.info('Starting server...')
 
-    this.database      = new database();
-    this.eventListener = new eventListener(this);
-
-    if(this.type == 'world'){
-      this.roomManager = this.world.roomManager;
-      this.gameManager = this.world.gameManager;
+    if (!config.SERVER_ID) {
+      logger.error('Missing server ID parameter', config)
+      process.exit()
     }
 
-    this.createServer();
+    this.config = config
 
-    ///////////
+    this.id = config.SERVER_ID
+    this.type = config.SERVER_TYPE
 
-    if(process.env.NODE_ENV === 'production'){
-      process.on('SIGINT',  () => this.handleShutdown());
-      process.on('SIGTERM', () => this.handleShutdown());
+    this.port = config.LOGIN_SERVER.SERVER_PORT
+
+    if (this.type === 'world') {
+      this.port = config.WORLD_SERVER.SERVER_PORT
+    }
+
+    this.maxClients = (config.SERVER_CONNECTIONS_MAX ? config.SERVER_CONNECTIONS_MAX : 100)
+    this.clients = []
+
+    this.database = new Database()
+    this.eventListener = new EventListener(this)
+
+    if (this.type === 'world') {
+      this.roomManager = this.world.roomManager
+      this.gameManager = this.world.gameManager
+    }
+
+    this.createServer()
+
+    /// ////////
+
+    if (process.env.NODE_ENV === 'production') {
+      process.on('SIGINT', () => this.handleShutdown())
+      process.on('SIGTERM', () => this.handleShutdown())
     }
   }
 
-  createServer(){
+  createServer () {
     net.createServer((socket) => {
-      logger.info('A client has connected');
+      logger.info('A client has connected')
 
-      socket.setEncoding('utf8');
+      socket.setEncoding('utf8')
 
-      let clientObj = new client(socket, this);
+      let clientObj = new Client(socket, this)
 
-      if(this.clients.length >= this.maxClients)
-        clientObj.sendError(103, true); // server full
+      if (this.clients.length >= this.maxClients) clientObj.sendError(103, true) // server full
 
-      this.clients.push(clientObj);
+      this.clients.push(clientObj)
 
       socket.on('data', (data) => {
-        data = data.toString().split('\0')[0];
-        this.eventListener.handleData(data, clientObj);
-      });
+        data = data.toString().split('\0')[0]
+
+        this.eventListener.handleData(data, clientObj)
+      })
 
       socket.on('close', () => {
-        clientObj.disconnect();
-        logger.info('A client has disconnected');
-      });
+        clientObj.disconnect()
+
+        logger.info('A client has disconnected')
+      })
 
       socket.on('error', (error) => {
-        clientObj.disconnect();
-        if(error.code == 'ETIMEDOUT' || error.code == 'ECONNRESET')
-          return;
-        logger.error(error);
-      });
+        clientObj.disconnect()
 
+        if (error.code === 'ETIMEDOUT' || error.code === 'ECONNRESET') return
+
+        logger.error(error)
+      })
     }).listen(this.port, () => {
-      const type = utils.firstToUpper(this.type);
-      logger.info(`${type} server listening on port ${this.port}`);
-    });
+      const type = utils.firstToUpper(this.type)
+
+      logger.info(`${type} server listening on port ${this.port}`)
+    })
   }
 
-  removeClient(client){
-    let index = this.clients.indexOf(client);
+  removeClient (client) {
+    let index = this.clients.indexOf(client)
 
-    if(index > -1){
-      logger.debug('Removing disconnecting client...');
+    if (index > -1) {
+      logger.debug('Removing disconnecting client...')
 
-      if(client.room)
-        client.room.removeClient(client);
+      if (client.room) client.room.removeClient(client)
 
-      if(client.tableId)
-        this.gameManager.leaveTable(client);
+      if (client.tableId) this.gameManager.leaveTable(client)
 
-      if(client.buddies){
-        for(const buddy of client.buddies){
-          if(this.isOnline(buddy))
-            this.getClientById(buddy).sendXt('bof', -1, client.id);
+      if (client.buddies) {
+        for (const buddy of client.buddies) {
+          if (this.isOnline(buddy)) this.getClientById(buddy).sendXt('bof', -1, client.id)
         }
       }
 
-      if(this.roomManager){
-        const igloo = (client.id + 1000);
+      if (this.roomManager) {
+        const igloo = (client.id + 1000)
 
-        if(this.roomManager.checkIgloo(igloo))
-          this.roomManager.closeIgloo(igloo);
+        if (this.roomManager.checkIgloo(igloo)) this.roomManager.closeIgloo(igloo)
       }
 
-      this.clients.splice(index, 1);
+      this.clients.splice(index, 1)
 
-      client.socket.end();
-      client.socket.destroy();
+      client.socket.end()
+      client.socket.destroy()
     }
   }
 
-  handleShutdown(){
-    logger.warn('Server shutting down in 30 seconds...');
+  handleShutdown () {
+    logger.warn('Server shutting down in 30 seconds...')
 
-    for(const client of this.clients){
-      client.sendError(990);
+    for (const client of this.clients) {
+      client.sendError(990)
     }
 
     setTimeout(() => {
-      for(const client of this.clients){
-        client.disconnect();
+      for (const client of this.clients) {
+        client.disconnect()
       }
-      process.exit();
-    }, 30000);
+
+      process.exit()
+    }, 30000)
   }
 
-  reloadModules(){
-    return fs.readdirAsync(__dirname + '/Handlers').map((file) => {
-      if(file.substr(file.length - 3) == '.js')
-          delete require.cache[file];
+  reloadModules () {
+    return fs.readdirAsync(path.join(__dirname, 'Handlers')).map((file) => {
+      if (file.substr(file.length - 3) === '.js') delete require.cache[file]
     }).then(() => {
-      this.world.fetchHandlers();
-      this.gameManager.fetchHandlers();
-    });
+      this.world.fetchHandlers()
+      this.gameManager.fetchHandlers()
+    })
   }
 
-  isOnline(id){
-    for(const client of this.clients){
-      if(client.id == id)
-        return true;
+  isOnline (id) {
+    for (const client of this.clients) {
+      if (client.id === id) return true
     }
-    return false;
+
+    return false
   }
 
-  getClientById(id){
-    for(const client of this.clients){
-      if(client.id == id)
-        return client;
-    }
-  }
-
-  getClientByName(name){
-    for(const client of this.clients){
-      if(client.nickname.toLowerCase() == name.toLowerCase())
-        return client;
+  getClientById (id) {
+    for (const client of this.clients) {
+      if (client.id === id) return client
     }
   }
 
-  getList(){
-    const servers   = require('../onyxConfig').Server;
-    let   serverArr = [];
-
-    for(const id of Object.keys(servers)){
-      if(servers[id].type == 'world'){
-        const server = [id, servers[id].name, servers[id].host, servers[id].port];
-        serverArr.push(server.join('|'));
-      }
+  getClientByName (name) {
+    for (const client of this.clients) {
+      if (client.nickname.toLowerCase() === name.toLowerCase()) return client
     }
+  }
 
-    return serverArr.join('%');
+  getList () {
+    let serverList = []
+
+    const world = this.config.WORLD_SERVER
+
+    const server = [
+      world.SERVER_ID,
+      world.SERVER_NAME,
+      world.SERVER_HOST,
+      world.SERVER_PORT
+    ]
+
+    serverList.push(server)
+
+    return serverList.join('%')
   }
 }

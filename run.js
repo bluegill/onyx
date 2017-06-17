@@ -1,34 +1,18 @@
-'use strict';
+'use strict'
 
-const path = 'lib';
+let path = 'lib'
 
-if(process.argv.includes('--src')) path = 'src';
+if (process.argv.includes('--src')) path = 'src'
 
-/*
-const server = require('./' + path + '/Onyx').default;
-const logger = require('./' + path + '/Logger').default;
-const utils  = require('./' + path + '/Utils').default;
+const Onyx = require(`./${path}/Onyx`)
+const Logger = require(`./${path}/Logger`)
 
-const config = require('./config');
+let config = require('./config')
 
-if(!process.argv.includes('--hide-header'))
-  utils.showHeader();
+if (config) {
+  const onyx = new Onyx(config)
 
-if(config) new server(config.SERVER_TYPE);
-else logger.error('Server configuration missing or invalid');
-*/
-
-const server = require('./' + path + '/Onyx').default;
-const logger = require('./' + path + '/Logger').default;
-
-let serverConfig = require('./onyxConfig').Server;
-let serverId     = process.argv[2];
-
-serverConfig = serverConfig[serverId];
-
-if(serverConfig){
-  serverConfig.id = serverId;
-  new server(serverConfig);
+  onyx.nil() // hide lint warning
 } else {
-  logger.error('Server configuration not found');
+  Logger.error('Server configuration not found')
 }

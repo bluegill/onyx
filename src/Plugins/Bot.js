@@ -1,29 +1,31 @@
-import pluginBase from './PluginBase';
+'use strict'
 
-export default class extends pluginBase {
-  constructor(manager){
-    super(manager);
+const base = require('./PluginBase')
 
-    this.id       = 0;
-    this.username = 'Uber';
+module.exports = class extends base {
+  constructor (manager) {
+    super(manager)
 
-    const handleJoinRoom   = this.world.handleJoinRoom;
-    const handleJoinPlayer = this.world.handleJoinPlayer;
+    this.id = 0
+    this.username = 'Uber'
 
-    this.world.handleJoinRoom = ((data, client) => {
-      handleJoinRoom.apply(this.world, [data, client]);
+    const handleJoinRoom = this.world.handleJoinRoom
+    const handleJoinPlayer = this.world.handleJoinPlayer
 
-      this.addToRoom(client);
-    });
+    this.world.handleJoinRoom = (data, client) => {
+      handleJoinRoom.apply(this.world, [data, client])
 
-    this.world.handleJoinPlayer = ((data, client) => {
-      handleJoinPlayer.apply(this.world, [data, client]);
+      this.addToRoom(client)
+    }
 
-      this.addToRoom(client);
-    });
+    this.world.handleJoinPlayer = (data, client) => {
+      handleJoinPlayer.apply(this.world, [data, client])
+
+      this.addToRoom(client)
+    }
   }
 
-  addToRoom(client){
+  addToRoom (client) {
     let bot = [
       this.id,
       this.username,
@@ -42,19 +44,20 @@ export default class extends pluginBase {
       1, // frame
       1,
       1
-    ];
+    ]
 
-    client.sendXt('ap', -1, bot.join('|'));
+    client.sendXt('ap', -1, bot.join('|'))
   }
 
-  sendMessage(msg, client){
-    if(client)
-      client.sendXt('sm', -1, this.id, msg);
+  sendMessage (msg, client) {
+    if (client) {
+      client.sendXt('sm', -1, this.id, msg)
+    }
   }
 
-  sendGlobalMessage(msg, client){
-    for(const client of this.server.clients){
-      client.sendXt('sm', -1, this.id, msg);
+  sendGlobalMessage (msg, client) {
+    for (const client of this.server.clients) {
+      client.sendXt('sm', -1, this.id, msg)
     }
   }
 }

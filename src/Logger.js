@@ -1,16 +1,18 @@
-import winston from 'winston';
+'use strict'
+
+const winston = require('winston')
 
 // TODO: REWRITE LOGGER USING DIFFERENT, MORE SIMPLE LOGGING LIBRARY
 
-winston.emitErrs = true;
+winston.emitErrs = true
 
-export default new winston.Logger({
+module.exports = new winston.Logger({
   transports: [
     new winston.transports.Console({
       level: 'debug',
       colorize: true,
       handleExceptions: true,
-      humanReadableUnhandledException: true      
+      humanReadableUnhandledException: true
     }),
 
     new winston.transports.File({
@@ -23,8 +25,8 @@ export default new winston.Logger({
       name: 'debug',
       level: 'debug',
       filename: 'debug.log'
-    })*/
+    }) */
   ],
-  
+
   exitOnError: false
-});
+})

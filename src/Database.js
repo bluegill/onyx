@@ -1,42 +1,44 @@
-import logger from './Logger';
-import utils  from './Utils';
+'use strict'
 
-import {Database} from '../onyxConfig';
+const logger = require('./Logger')
+const utils = require('./Utils')
 
-export default class {
-  constructor(){
+const config = require('../config')
+
+module.exports = class {
+  constructor () {
     this.knex = require('knex')({
       client: 'mariadb',
       connection: {
-        'host': Database.host,
-        'db': Database.database,
-        'user': Database.user,
-        'password': Database.pass      
+        'host': config.SERVER_DATABASE_HOST,
+        'db': config.SERVER_DATABASE_NAME,
+        'user': config.SERVER_DATABASE_USER,
+        'password': config.SERVER_DATABASE_PASS
       }
-    });
+    })
   }
 
-  updateColumn(user, column, value){
+  updateColumn (user, column, value) {
     return this.knex('users').update(column, value).where('id', user).then(() => {
       // execute
     }).catch((error) => {
-      logger.error(error);
-    });
+      logger.error(error)
+    })
   }
 
-  getItems(){
-    return this.knex('items').select('*');
+  getItems () {
+    return this.knex('items').select('*')
   }
 
-  getPlayerByName(username){
-    return this.knex('users').first('*').where('username', username);
+  getPlayerByName (username) {
+    return this.knex('users').first('*').where('username', username)
   }
 
-  getPlayerById(id){
-    return this.knex('users').first('*').where('id', id);
+  getPlayerById (id) {
+    return this.knex('users').first('*').where('id', id)
   }
 
-  addBan(moderator, user, duration, reason){
+  addBan (moderator, user, duration, reason) {
     return this.knex('bans').insert({
       'player': user,
       'moderator': moderator,
@@ -46,11 +48,11 @@ export default class {
     }).then(() => {
       // execute
     }).catch((error) => {
-      logger.error(error);
-    });
+      logger.error(error)
+    })
   }
 
-  addLog(from, to, message){
+  addLog (from, to, message) {
     // todo: add public messaging logging, maybe keep max of like 20 logs per user?
     return this.knex('messengerLog').insert({
       'from': from,
@@ -60,7 +62,7 @@ export default class {
     }).then(() => {
       // execute
     }).catch((error) => {
-      logger.error(error);
-    });
+      logger.error(error)
+    })
   }
 }

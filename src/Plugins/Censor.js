@@ -1,8 +1,10 @@
-import pluginBase from './PluginBase';
+'use strict'
 
-export default class extends pluginBase {
-  constructor(manager){
-    super(manager);
+const base = require('./PluginBase')
+
+module.exports = class extends base {
+  constructor (manager) {
+    super(manager)
 
     this.filter = [
       'cpps.io',
@@ -20,31 +22,33 @@ export default class extends pluginBase {
       'mystcp',
       'pengur.co',
       'pluspenguin'
-    ];
+    ]
 
-    const handleSendMessage        = this.world.handleSendMessage;
-    const handleSendPrivateMessage = this.world.handleSendPrivateMessage;
+    const handleSendMessage = this.world.handleSendMessage
+    const handleSendPrivateMessage = this.world.handleSendPrivateMessage
 
-    this.world.handleSendMessage = ((data, client) => {
-      let message = data[4].trim();
-          message = message.toLowerCase();
+    this.world.handleSendMessage = (data, client) => {
+      let message = data[4].trim()
 
-      for(let str of this.filter){
-        if(message.includes(str)) return;
+      message = message.toLowerCase()
+
+      for (let str of this.filter) {
+        if (message.includes(str)) return
       }
 
-      handleSendMessage.apply(this.world, [data, client]);
-    });
+      handleSendMessage.apply(this.world, [data, client])
+    }
 
-    this.world.handleSendPrivateMessage = ((data, client) => {
-      let message = data[5].trim();
-          message = message.toLowerCase();
+    this.world.handleSendPrivateMessage = (data, client) => {
+      let message = data[5].trim()
 
-      for(let str of this.filter){
-        if(message.includes(str)) return;
+      message = message.toLowerCase()
+
+      for (let str of this.filter) {
+        if (message.includes(str)) return
       }
 
-      handleSendPrivateMessage.apply(this.world, [data, client]);
-    });
+      handleSendPrivateMessage.apply(this.world, [data, client])
+    }
   }
 }

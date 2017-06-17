@@ -1,12 +1,14 @@
-export let Puffle = {
+'use strict'
+
+module.exports = {
 
   // TODO
-  
-  handleGetPuffle: function(data, client) {
-    client.sendXt('pg', -1, data[3]);
+
+  handleGetPuffle: (data, client) => {
+    client.sendXt('pg', -1, data[3])
   },
 
-  handleGetPuffleUser: function(data, client) {
+  handleGetPuffleUser: (data, client) => {
 
   }
 

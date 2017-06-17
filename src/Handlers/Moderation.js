@@ -1,108 +1,109 @@
-export let Moderation = {
+'use strict'
 
-  handleBan: function(data, client) {
-    if(!client.isModerator) return;
+module.exports = {
 
-    const id       = parseInt(data[3]);
-    const reason   = data[4];
-    const duration = 24;
+  handleBan: (data, client) => {
+    if (!client.isModerator) return
 
-    if(isNaN(id)) return;
+    const id = parseInt(data[3])
+    const reason = data[4]
+    const duration = 24
 
-    this.database.addBan(client.id, id, duration, reason);
+    if (isNaN(id)) return
 
-    const player = this.getClientById(id);
+    this.database.addBan(client.id, id, duration, reason)
 
-    if(player){
-      player.sendXt('b', -1);
-      player.disconnect();
+    const player = this.getClientById(id)
+
+    if (player) {
+      player.sendXt('b', -1)
+      player.disconnect()
     }
   },
 
-  handleKick: function(data, client) {
-    if(!client.isModerator) return;
+  handleKick: (data, client) => {
+    if (!client.isModerator) return
 
-    const id     = parseInt(data[3]);
-    const player = this.getClientById(id);
+    const id = parseInt(data[3])
+    const player = this.getClientById(id)
 
-    if(player){
-      if(player.rank >= client.rank) return;
+    if (player) {
+      if (player.rank >= client.rank) return
 
-      player.sendError(5, true);
+      player.sendError(5, true)
     }
   },
 
-  handleMute: function(data, client) {
-    if(!client.isModerator) return;
+  handleMute: (data, client) => {
+    if (!client.isModerator) return
 
-    const id   = data[3];
-    let player = this.getClientById(id);
-    
-    if(player) player.isMuted = !player.isMuted;
+    const id = data[3]
+    let player = this.getClientById(id)
+
+    if (player) player.isMuted = !player.isMuted
   },
-
 
   // CUSTOM HANDLERS
 
-  handleSearch: function(data, client) {
-    if(!client.isModerator) return;
+  handleSearch: (data, client) => {
+    if (!client.isModerator) return
 
-    const player = this.getClientByName(data[3]);
+    const player = this.getClientByName(data[3])
 
-    if(player){
+    if (player) {
       const playerObject = {
         'player_id': player.id,
         'nickname': player.username,
         'rank': player.rank,
         'location': player.room.id
-      };
-      
-      return client.sendXt('sr', -1, JSON.stringify(playerObject));
+      }
+
+      return client.sendXt('sr', -1, JSON.stringify(playerObject))
     }
 
-    client.sendXt('sr', -1);
+    client.sendXt('sr', -1)
   },
 
-  handleWarn: function(data, client) {
-    if(!client.isModerator) return;
+  handleWarn: (data, client) => {
+    if (!client.isModerator) return
 
-    const id     = parseInt(data[3]);
-    const player = this.getClientById(id);
+    const id = parseInt(data[3])
+    const player = this.getClientById(id)
 
-    if(player) player.sendXt('wa', -1, data[4]);
+    if (player) player.sendXt('wa', -1, data[4])
   },
 
-  handleMove: function(data, client) {
-    if(!client.isModerator) return;
-    if(client.rank < 3)     return;
+  handleMove: (data, client) => {
+    if (!client.isModerator) return
+    if (client.rank < 3) return
 
-    const id = parseInt(data[3]);
+    const id = parseInt(data[3])
 
-    const x  = parseInt(data[4]),
-          y  = parseInt(data[5]);
+    const x = parseInt(data[4])
+    const y = parseInt(data[5])
 
-    let player = this.getClientById(id);
+    let player = this.getClientById(id)
 
-    if(player){
-      player.x = x;
-      player.y = y;
+    if (player) {
+      player.x = x
+      player.y = y
 
-      client.room.sendXt('mp', -1, id, x, y);
+      client.room.sendXt('mp', -1, id, x, y)
     }
   },
 
-  handleBlockName: function(data, client) {
-    if(!client.isModerator) return;
+  handleBlockName: (data, client) => {
+    if (!client.isModerator) return
 
-    const id     = parseInt(data[3]);
-    const player = this.getClientById(id);
+    const id = parseInt(data[3])
+    const player = this.getClientById(id)
 
-    if(player){
-      const nickname = 'p' + player.id;
+    if (player) {
+      const nickname = `p${player.id}`
 
-      player.nickname = nickname;
-      player.updateColumn('nickname', nickname);
-      player.sendXt('bn', -1, player.id);
+      player.nickname = nickname
+      player.updateColumn('nickname', nickname)
+      player.sendXt('bn', -1, player.id)
     }
   }
 
