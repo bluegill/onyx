@@ -3,8 +3,7 @@
   "version": "1.1.0",
   "private": true,
   "scripts": {
-    "build": "bin/build",
-    "start": "bin/build --run"
+    "start": "bin/start"
   },
   "dependencies": {
     "chalk": "^1.1.3",
