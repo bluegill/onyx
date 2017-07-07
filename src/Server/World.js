@@ -5,8 +5,6 @@ import path from 'path'
 
 import logger from '../Utilities/Logger'
 
-import requests from '../Network/Requests'
-
 import * as Promise from 'bluebird'
 
 import RoomManager from './Managers/RoomManager'
