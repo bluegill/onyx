@@ -10,7 +10,7 @@ export const WORLD_SERVER = {
   SERVER_HOST: '127.0.0.1'
 }
 
-export const SERVER_ID = process.argv[2]
+export const SERVER_ID = parseInt(process.argv[2])
 export const SERVER_TYPE = (SERVER_ID === LOGIN_SERVER.SERVER_ID ? 'login' : 'world')
 
 export const SERVER_CONNECTIONS_MAX = 256
